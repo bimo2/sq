@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "define.h"
 #import "SQError.h"
+#import "SQPrint.h"
 
 int find(char **url) {
     NSArray *extensions = @[ @SQ_FILE ];
@@ -48,7 +49,7 @@ int main(int argc, const char *argv[]) {
         int code = find(&url);
         
         if (code) {
-            NSLog(@"(%d)", code);
+            [SQPrint error:[NSString stringWithFormat:@"(%d)", code]];
             free(url);
             
             return code;
@@ -61,8 +62,11 @@ int main(int argc, const char *argv[]) {
             free(url);
         }
         
-        NSLog(@"sq path %@", path);
-        NSLog(@"sq build %s%d", BUILD_VERSION, BUILD_NUMBER);
+        [SQPrint info:@"github/sq" context:nil];
+        [SQPrint success:@"done"];
+        [SQPrint warning:@"not found"];
+        [SQPrint error:@"failed"];
+        [SQPrint line:[NSString stringWithFormat:@"build %s%d", BUILD_VERSION, BUILD_NUMBER]];
     }
     
     return 0;
