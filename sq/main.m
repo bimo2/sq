@@ -9,6 +9,13 @@
 #import "define.h"
 #import "SQError.h"
 #import "SQPrint.h"
+#import "SQREPL.h"
+
+int fail(int code) {
+    [SQPrint error:[NSString stringWithFormat:@"(%d)", code]];
+    
+    return code;
+}
 
 int find(char **url) {
     NSArray *extensions = @[ @SQ_FILE ];
@@ -49,10 +56,9 @@ int main(int argc, const char *argv[]) {
         int code = find(&url);
         
         if (code) {
-            [SQPrint error:[NSString stringWithFormat:@"(%d)", code]];
             free(url);
             
-            return code;
+            return fail(code);
         };
         
         NSString *path;
@@ -62,11 +68,11 @@ int main(int argc, const char *argv[]) {
             free(url);
         }
         
-        [SQPrint info:@"github/sq" context:nil];
-        [SQPrint success:@"done"];
-        [SQPrint warning:@"not found"];
-        [SQPrint error:@"failed"];
-        [SQPrint line:[NSString stringWithFormat:@"build %s%d", BUILD_VERSION, BUILD_NUMBER]];
+        SQREPL *app = [[SQREPL alloc] initWitPath:path];
+        
+        if (!app) return fail(SQObjCError);
+        
+        [app version];
     }
     
     return 0;

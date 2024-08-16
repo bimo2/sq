@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import "SQPrint.h"
 
 @implementation SQPrint

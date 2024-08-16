@@ -10,7 +10,7 @@
 
 @interface SQPrint : NSObject
 
-+ (void)info:(NSString *)log context:(NSString *)prefix;
++ (void)info:(NSString *)log context:(NSString *)context;
 
 + (void)success:(NSString *)log;
 
