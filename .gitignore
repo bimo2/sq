@@ -1,4 +1,5 @@
 *.env
+xcode/
 
 # macos
 *.DS_Store
@@ -6,4 +7,5 @@
 # xcode
 *.dSYM
 *.ipa
+*.xcscheme
 xcuserdata/

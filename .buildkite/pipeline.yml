@@ -1,0 +1,5 @@
+steps:
+  - command: 'xcodebuild test -project sq.xcodeproj -scheme tests'
+
+  - command: 'xcodebuild clean build -project sq.xcodeproj -arch arm64 -scheme sq -configuration Release -derivedDataPath ./xcode GCC_PREPROCESSOR_DEFINITIONS="BUILD_NUMBER=\$BUILDKITE_BUILD_NUMBER"'
+    artifact_paths: 'xcode/Build/Products/**/*'
