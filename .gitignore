@@ -1,0 +1,9 @@
+*.env
+
+# macos
+*.DS_Store
+
+# xcode
+*.dSYM
+*.ipa
+xcuserdata/
