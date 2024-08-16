@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		37739EED2C6FE34B0081459E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739EEC2C6FE34B0081459E /* main.m */; };
 		37739F082C6FE8D00081459E /* tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F072C6FE8D00081459E /* tests.m */; };
+		37739F0E2C6FF20F0081459E /* SQError.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F0D2C6FF20F0081459E /* SQError.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,9 @@
 		37739EEC2C6FE34B0081459E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		37739F052C6FE8D00081459E /* tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		37739F072C6FE8D00081459E /* tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = tests.m; sourceTree = "<group>"; };
+		37739F0C2C6FF1F20081459E /* SQError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQError.h; sourceTree = "<group>"; };
+		37739F0D2C6FF20F0081459E /* SQError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQError.m; sourceTree = "<group>"; };
+		37739F102C6FF2E40081459E /* define.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = define.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +73,9 @@
 		37739EEB2C6FE34B0081459E /* sq */ = {
 			isa = PBXGroup;
 			children = (
+				37739F102C6FF2E40081459E /* define.h */,
+				37739F0C2C6FF1F20081459E /* SQError.h */,
+				37739F0D2C6FF20F0081459E /* SQError.m */,
 				37739EEC2C6FE34B0081459E /* main.m */,
 			);
 			path = sq;
@@ -170,6 +177,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37739F0E2C6FF20F0081459E /* SQError.m in Sources */,
 				37739EED2C6FE34B0081459E /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
