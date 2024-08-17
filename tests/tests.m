@@ -84,10 +84,10 @@
 
     find(&path);
 
-    if (path) XCTAssert(false);
+    XCTAssert(path == NULL);
 
     __weak Tests *weakSelf = self;
-
+    
     [self addTeardownBlock:^{
         [weakSelf.manager removeItemAtPath:file error:nil];
         [weakSelf.manager removeItemAtPath:gitFile error:nil];
