@@ -11,10 +11,25 @@
 
 #import "SQREPL.h"
 
+@interface SQREPL ()
+
+@property (nonatomic, copy) NSString *path;
+
+@end
+
 @implementation SQREPL
 
 - (instancetype)initWitPath:(NSString *)path {
+    _path = path;
+    
     return self;
+}
+
+- (void)docs {
+    [SQPrint info:[NSString stringWithFormat:@"%@\n-", nil] context:nil];
+    [SQPrint line:@"<url>            clone git repository"];
+    [SQPrint line:@"init             create .sq file"];
+    [SQPrint line:@"--version, -v"];
 }
 
 - (void)version {

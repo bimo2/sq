@@ -12,6 +12,8 @@
 
 - (instancetype)initWitPath:(NSString *)path;
 
+- (void)docs;
+
 - (void)version;
 
 @end
