@@ -12,7 +12,7 @@
 @interface Tests : XCTestCase
 
 @property (nonatomic) NSBundle *bundle;
-@property (nonatomic) NSFileManager *manager;
+@property (nonatomic) NSFileManager *fileManager;
 
 @end
 
@@ -20,26 +20,26 @@
 
 - (void)setUp {
     _bundle = [NSBundle bundleForClass:self.class];
-    _manager = NSFileManager.defaultManager;
+    _fileManager = NSFileManager.defaultManager;
 }
 
 - (void)test_findSQFile {
     NSURL *url = [[NSBundle bundleForClass:self.class] URLForResource:@".sq" withExtension:nil];
     NSString *json = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
     NSString *file = [[NSFileManager.defaultManager currentDirectoryPath] stringByAppendingPathComponent:@SQ_FILE];
-
+    
     [json writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:nil];
-
+    
     char *path = NULL;
-
+    
     find(&path);
-
+    
     XCTAssertEqualObjects(@".sq", [NSString stringWithCString:path encoding:NSUTF8StringEncoding].lastPathComponent);
-
+    
     __weak Tests *weakSelf = self;
-
+    
     [self addTeardownBlock:^{
-        [weakSelf.manager removeItemAtPath:file error:nil];
+        [weakSelf.fileManager removeItemAtPath:file error:nil];
         free(path);
     }];
 }
@@ -47,23 +47,23 @@
 - (void)test_findSQFile_recursive {
     NSURL *url = [[NSBundle bundleForClass:self.class] URLForResource:@".sq" withExtension:nil];
     NSString *json = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
-    NSString *directory = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@"/folder"];
-    NSString *file = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
-
-    [self.manager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+    NSString *directory = [self.fileManager.currentDirectoryPath stringByAppendingPathComponent:@"/folder"];
+    NSString *file = [self.fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
+    
+    [self.fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
     [json writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    [self.manager changeCurrentDirectoryPath:directory];
-
+    [self.fileManager changeCurrentDirectoryPath:directory];
+    
     char *path = NULL;
-
+    
     find(&path);
-
+    
     XCTAssertEqualObjects(@".sq", [NSString stringWithCString:path encoding:NSUTF8StringEncoding].lastPathComponent);
-
+    
     __weak Tests *weakSelf = self;
-
+    
     [self addTeardownBlock:^{
-        [weakSelf.manager removeItemAtPath:file error:nil];
+        [weakSelf.fileManager removeItemAtPath:file error:nil];
         free(path);
     }];
 }
@@ -71,28 +71,37 @@
 - (void)test_findSQFile_git {
     NSURL *url = [[NSBundle bundleForClass:self.class] URLForResource:@".sq" withExtension:nil];
     NSString *json = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
-    NSString *directory = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@"/folder"];
-    NSString *file = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
+    NSString *directory = [self.fileManager.currentDirectoryPath stringByAppendingPathComponent:@"/folder"];
+    NSString *file = [self.fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
     NSString *gitFile = [directory stringByAppendingPathComponent:@".git"];
-
-    [self.manager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+    
+    [self.fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
     [json writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    [self.manager createFileAtPath:gitFile contents:nil attributes:nil];
-    [self.manager changeCurrentDirectoryPath:directory];
-
+    [self.fileManager createFileAtPath:gitFile contents:nil attributes:nil];
+    [self.fileManager changeCurrentDirectoryPath:directory];
+    
     char *path = NULL;
-
+    
     find(&path);
-
+    
     XCTAssert(path == NULL);
-
+    
     __weak Tests *weakSelf = self;
     
     [self addTeardownBlock:^{
-        [weakSelf.manager removeItemAtPath:file error:nil];
-        [weakSelf.manager removeItemAtPath:gitFile error:nil];
+        [weakSelf.fileManager removeItemAtPath:file error:nil];
+        [weakSelf.fileManager removeItemAtPath:gitFile error:nil];
         free(path);
     }];
+}
+
+- (void)test_defaultSQFile_valid {
+    NSError *error;
+    NSJSONReadingOptions options = NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed;
+    id json = [NSJSONSerialization JSONObjectWithData:[@SQ_DEFAULT dataUsingEncoding:NSUTF8StringEncoding] options:options error:&error];
+    
+    XCTAssertNil(error);
+    XCTAssert([json isKindOfClass:NSDictionary.class]);
 }
 
 @end

@@ -10,11 +10,15 @@
 
 @interface SQREPL : NSObject
 
+@property (nonatomic, copy) NSString *path;
+
 - (instancetype)initWitPath:(NSString *)path;
 
 - (void)docs;
 
 - (void)version;
+
+- (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error ;
 
 @end
 

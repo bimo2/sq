@@ -17,4 +17,33 @@
 #define BUILD_NUMBER 0
 #endif
 
+#define SQ_DEFAULT \
+"sq: 0,\n" \
+"git: '%@',\n" \
+"require: [\n" \
+"  'git',\n" \
+"  'nano',\n" \
+"],\n" \
+"cli: {\n" \
+"  install: {\n" \
+"    d: 'install ...',\n" \
+"    sh: [\n" \
+"      'echo pkg install -d objc',\n" \
+"      'echo download http://127.0.0.1/sdk'\n" \
+"    ]\n" \
+"  },\n" \
+"  dev: {\n" \
+"    d: 'dev ...',\n" \
+"    sh: 'echo serve -p #port -> 4000#'\n" \
+"  },\n" \
+"  build: {\n" \
+"    d: 'build ...',\n" \
+"    sh: 'echo compile -o #bin!#'\n" \
+"  },\n" \
+"  test: {\n" \
+"    d: 'test ...',\n" \
+"    sh: 'echo test #suite#'\n" \
+"  }\n" \
+"}\n"
+
 #endif // DEFINE_H

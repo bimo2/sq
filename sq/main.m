@@ -23,14 +23,14 @@ int fail(int code) {
 
 int find(char **url) {
     NSArray *extensions = @[ @SQ_FILE ];
-    NSFileManager *manager = NSFileManager.defaultManager;
-    NSString *path = manager.currentDirectoryPath;
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSString *path = fileManager.currentDirectoryPath;
     NSString *lastPath;
     NSError *error;
     BOOL isGitPath = NO;
     
     while (!isGitPath && ![path isEqualToString:lastPath]) {
-        NSArray *directory = [manager contentsOfDirectoryAtPath:path error:&error];
+        NSArray *directory = [fileManager contentsOfDirectoryAtPath:path error:&error];
         
         if (error) return SQPathError;
         
@@ -75,13 +75,14 @@ int main(int argc, const char *argv[]) {
         SQREPL *app = [[SQREPL alloc] initWitPath:path];
         
         if (!app) return fail(SQObjCError);
-
+        
         if (argc < 2) {
             [app docs];
-
+            
             return 0;
         }
         
+        NSError *error;
         NSString *command = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
         NSMutableArray *options = NSMutableArray.array;
         
@@ -91,7 +92,16 @@ int main(int argc, const char *argv[]) {
             [options addObject:value];
         }
         
-        if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"]) [app version];
+        if (!app.path && [command isEqualToString:@"init"])
+            [app writeDefaultSQFileWithFileManager:NSFileManager.defaultManager error:&error];
+        else if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"])
+            [app version];
+        
+        if (error) {
+            [SQPrint error:error.userInfo.description];
+            
+            return (int) error.code;
+        }
     }
     
     return 0;

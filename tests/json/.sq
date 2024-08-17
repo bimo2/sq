@@ -1,1 +1,12 @@
-sq: 0
+sq: 0,
+git: 'objc',
+require: [
+  'npx',
+  'xcodebuild'
+],
+cli: {
+  test: {
+    d: 'run unit tests',
+    sh: 'xcodebuild test -project sq.xcodeproj -scheme tests'
+  }
+}

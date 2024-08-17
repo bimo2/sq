@@ -11,12 +11,6 @@
 
 #import "SQREPL.h"
 
-@interface SQREPL ()
-
-@property (nonatomic, copy) NSString *path;
-
-@end
-
 @implementation SQREPL
 
 - (instancetype)initWitPath:(NSString *)path {
@@ -40,6 +34,12 @@
 #endif
     
     [SQPrint line:[NSString stringWithFormat:@"sq.%@ %s (%s%d)", arch, VERSION, BUILD_VERSION, BUILD_NUMBER]];
+}
+
+- (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error  {
+    NSString *file = [fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
+    
+    [@SQ_DEFAULT writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:error];
 }
 
 @end
