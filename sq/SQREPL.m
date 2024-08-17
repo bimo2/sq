@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "define.h"
+#import "SQError.h"
 #import "SQPrint.h"
 
 #import "SQREPL.h"
@@ -34,6 +35,32 @@
 #endif
     
     [SQPrint line:[NSString stringWithFormat:@"sq.%@ %s (%s%d)", arch, VERSION, BUILD_VERSION, BUILD_NUMBER]];
+}
+
+- (void)cloneGitRepositoryWithURL:(NSString *)url error:(NSError **)error {
+    NSURL *gitURL = [NSURL URLWithString:url];
+    
+    if (!gitURL || !gitURL.scheme || !gitURL.host) {
+        *error = [NSError errorWithCode:SQGitError reason:@"invalid git url"];
+        
+        return;
+    }
+    
+    NSFileManager *fileManager = NSFileManager.defaultManager;
+    NSURL *pathURL = [fileManager.homeDirectoryForCurrentUser URLByAppendingPathComponent:gitURL.host];
+    
+    [fileManager createDirectoryAtURL:pathURL withIntermediateDirectories:YES attributes:nil error:error];
+    [fileManager changeCurrentDirectoryPath:pathURL.path];
+    
+    NSInteger code = system([NSString stringWithFormat:@"git clone %@", url].UTF8String);
+    
+    if (code) {
+        *error = [NSError errorWithCode:SQGitError reason:[NSString stringWithFormat:@"failed to clone: %@", url]];
+        
+        return;
+    }
+    
+    [SQPrint line:[NSString stringWithFormat:@"cd ~/%@/%@", gitURL.host, gitURL.lastPathComponent.stringByDeletingPathExtension]];
 }
 
 - (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error  {

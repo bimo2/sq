@@ -11,6 +11,7 @@
 enum {
     SQObjCError = 100,
     SQPathError,
+    SQGitError,
     SQREPLError,
 };
 

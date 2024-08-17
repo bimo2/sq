@@ -92,13 +92,15 @@ int main(int argc, const char *argv[]) {
             [options addObject:value];
         }
         
-        if (!app.path && [command isEqualToString:@"init"])
+        if ([command hasPrefix:@"http"] && [command hasSuffix:@".git"])
+            [app cloneGitRepositoryWithURL:command error:&error];
+        else if (!app.path && [command isEqualToString:@"init"])
             [app writeDefaultSQFileWithFileManager:NSFileManager.defaultManager error:&error];
         else if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"])
             [app version];
         
         if (error) {
-            [SQPrint error:error.userInfo.description];
+            [SQPrint error:error.localizedDescription];
             
             return (int) error.code;
         }
