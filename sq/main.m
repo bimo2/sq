@@ -15,8 +15,12 @@
 #import "testing.h"
 #endif
 
-int fail(int code) {
-    [SQPrint error:[NSString stringWithFormat:@"(%d)", code]];
+int fail(int code, const char *description) {
+    if (description) {
+        [SQPrint error:[NSString stringWithCString:description encoding:NSUTF8StringEncoding]];
+    } else {
+        [SQPrint error:[NSString stringWithFormat:@"(%d)", code]];
+    }
     
     return code;
 }
@@ -62,9 +66,10 @@ int main(int argc, const char *argv[]) {
         if (code) {
             free(url);
             
-            return fail(code);
+            return fail(code, NULL);
         };
         
+        NSError *error;
         NSString *path;
         
         if (url) {
@@ -72,9 +77,10 @@ int main(int argc, const char *argv[]) {
             free(url);
         }
         
-        SQREPL *app = [[SQREPL alloc] initWitPath:path];
+        SQREPL *app = [[SQREPL alloc] initWitPath:path error:&error];
         
-        if (!app) return fail(SQObjCError);
+        if (error) return fail((int) error.code, error.localizedDescription.UTF8String);
+        if (!app) return fail(SQObjCError, NULL);
         
         if (argc < 2) {
             [app docs];
@@ -82,7 +88,6 @@ int main(int argc, const char *argv[]) {
             return 0;
         }
         
-        NSError *error;
         NSString *command = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
         NSMutableArray *options = NSMutableArray.array;
         
@@ -99,11 +104,7 @@ int main(int argc, const char *argv[]) {
         else if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"])
             [app version];
         
-        if (error) {
-            [SQPrint error:error.localizedDescription];
-            
-            return (int) error.code;
-        }
+        if (error) return fail((int) error.code, error.localizedDescription.UTF8String);
     }
     
     return 0;

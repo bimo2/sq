@@ -7,21 +7,30 @@
 
 #import <Foundation/Foundation.h>
 #import "define.h"
+#import "SQContext.h"
 #import "SQError.h"
 #import "SQPrint.h"
 
 #import "SQREPL.h"
 
+@interface SQREPL ()
+
+@property (nonatomic) SQContext *context;
+
+@end
+
 @implementation SQREPL
 
-- (instancetype)initWitPath:(NSString *)path {
+- (instancetype)initWitPath:(NSString *)path error:(NSError **)error {
     _path = path;
+    
+    if (path) _context = [[SQContext alloc] initWithData:[NSData dataWithContentsOfFile:path] error:error];
     
     return self;
 }
 
 - (void)docs {
-    [SQPrint info:[NSString stringWithFormat:@"%@\n-", nil] context:nil];
+    [SQPrint info:[NSString stringWithFormat:@"(%@)\n-", self.context.repo ?: @"null"] context:nil];
     [SQPrint line:@"<url>            clone git repository"];
     [SQPrint line:@"init             create .sq file"];
     [SQPrint line:@"--version, -v"];
