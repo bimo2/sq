@@ -10,8 +10,9 @@
 
 @interface SQContext : NSObject
 
-@property (nonatomic) NSInteger version;
-@property (nonatomic, copy) NSString *repo;
+@property (nonatomic, readonly) NSInteger version;
+@property (nonatomic, copy, readonly) NSString *repo;
+@property (nonatomic, readonly) NSArray *binaries;
 
 - (instancetype)initWithData:(NSData *)data error:(NSError **)error;
 

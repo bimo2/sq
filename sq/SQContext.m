@@ -17,10 +17,8 @@
     NSJSONReadingOptions options = NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed;
     id json = [NSJSONSerialization JSONObjectWithData:data options:options error:error];
     
-    if (*error) return nil;
-    
-    if (![json isKindOfClass:NSDictionary.class]) {
-        *error = [NSError errorWithCode:SQSyntaxError reason:@"expected JSON5 object"];
+    if (*error || ![json isKindOfClass:NSDictionary.class]) {
+        *error = [NSError errorWithCode:SQSyntaxError reason:@"invalid JSON5 object"];
         
         return nil;
     }
@@ -44,7 +42,32 @@
         return nil;
     }
     
-    _repo = repo ?: @"";
+    _repo = repo;
+    
+    id binaries = object[@"require"];
+    
+    if (!binaries) {
+        _binaries = NSArray.array;
+    } else if (![binaries isKindOfClass:NSArray.class]) {
+        *error = [NSError errorWithCode:SQSyntaxError reason:@"expected JSON5 array: require"];
+        
+        return nil;
+    } else {
+        NSMutableArray *array = [NSMutableArray arrayWithArray:binaries];
+        NSInteger index = 0;
+        
+        for (NSObject *item in array) {
+            if (![item isKindOfClass:NSString.class]) {
+                *error = [NSError errorWithCode:SQSyntaxError reason:[NSString stringWithFormat:@"expected JSON5 string: require[%ld]", index]];
+                
+                return nil;
+            }
+            
+            index++;
+        }
+        
+        _binaries = [NSArray arrayWithArray:array];
+    }
     
     return self;
 }
