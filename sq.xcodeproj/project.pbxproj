@@ -12,6 +12,11 @@
 		37739F0E2C6FF20F0081459E /* SQError.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F0D2C6FF20F0081459E /* SQError.m */; };
 		37739F132C6FF69E0081459E /* SQPrint.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F122C6FF69E0081459E /* SQPrint.m */; };
 		37739F152C6FFE250081459E /* SQREPL.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F142C6FFE250081459E /* SQREPL.m */; };
+		37739F1A2C7053880081459E /* .sq in Resources */ = {isa = PBXBuildFile; fileRef = 37739F192C7053880081459E /* .sq */; };
+		37739F1B2C7053F50081459E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739EEC2C6FE34B0081459E /* main.m */; };
+		37739F1C2C7054030081459E /* SQREPL.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F142C6FFE250081459E /* SQREPL.m */; };
+		37739F1D2C7054060081459E /* SQPrint.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F122C6FF69E0081459E /* SQPrint.m */; };
+		37739F1E2C7054090081459E /* SQError.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F0D2C6FF20F0081459E /* SQError.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,6 +43,8 @@
 		37739F122C6FF69E0081459E /* SQPrint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQPrint.m; sourceTree = "<group>"; };
 		37739F142C6FFE250081459E /* SQREPL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQREPL.m; sourceTree = "<group>"; };
 		37739F162C6FFE390081459E /* SQREPL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQREPL.h; sourceTree = "<group>"; };
+		37739F172C704F290081459E /* testing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = testing.h; sourceTree = "<group>"; };
+		37739F192C7053880081459E /* .sq */ = {isa = PBXFileReference; lastKnownFileType = text; path = .sq; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,9 +101,19 @@
 		37739F062C6FE8D00081459E /* tests */ = {
 			isa = PBXGroup;
 			children = (
+				37739F182C7053580081459E /* json */,
+				37739F172C704F290081459E /* testing.h */,
 				37739F072C6FE8D00081459E /* tests.m */,
 			);
 			path = tests;
+			sourceTree = "<group>";
+		};
+		37739F182C7053580081459E /* json */ = {
+			isa = PBXGroup;
+			children = (
+				37739F192C7053880081459E /* .sq */,
+			);
+			path = json;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +194,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37739F1A2C7053880081459E /* .sq in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +216,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37739F1C2C7054030081459E /* SQREPL.m in Sources */,
+				37739F1D2C7054060081459E /* SQPrint.m in Sources */,
+				37739F1E2C7054090081459E /* SQError.m in Sources */,
+				37739F1B2C7053F50081459E /* main.m in Sources */,
 				37739F082C6FE8D00081459E /* tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

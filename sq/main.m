@@ -11,6 +11,10 @@
 #import "SQPrint.h"
 #import "SQREPL.h"
 
+#ifdef TESTING
+#import "testing.h"
+#endif
+
 int fail(int code) {
     [SQPrint error:[NSString stringWithFormat:@"(%d)", code]];
     

@@ -6,30 +6,92 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "define.h"
+#import "testing.h"
 
-@interface tests : XCTestCase
+@interface Tests : XCTestCase
+
+@property (nonatomic) NSBundle *bundle;
+@property (nonatomic) NSFileManager *manager;
 
 @end
 
-@implementation tests
+@implementation Tests
 
 - (void)setUp {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    _bundle = [NSBundle bundleForClass:self.class];
+    _manager = NSFileManager.defaultManager;
 }
 
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+- (void)test_findSQFile {
+    NSURL *url = [[NSBundle bundleForClass:self.class] URLForResource:@".sq" withExtension:nil];
+    NSString *json = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+    NSString *file = [[NSFileManager.defaultManager currentDirectoryPath] stringByAppendingPathComponent:@SQ_FILE];
+
+    [json writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:nil];
+
+    char *path = NULL;
+
+    find(&path);
+
+    XCTAssertEqualObjects(@".sq", [NSString stringWithCString:path encoding:NSUTF8StringEncoding].lastPathComponent);
+
+    __weak Tests *weakSelf = self;
+
+    [self addTeardownBlock:^{
+        [weakSelf.manager removeItemAtPath:file error:nil];
+        free(path);
+    }];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
+- (void)test_findSQFile_recursive {
+    NSURL *url = [[NSBundle bundleForClass:self.class] URLForResource:@".sq" withExtension:nil];
+    NSString *json = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+    NSString *directory = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@"/folder"];
+    NSString *file = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
+
+    [self.manager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+    [json writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    [self.manager changeCurrentDirectoryPath:directory];
+
+    char *path = NULL;
+
+    find(&path);
+
+    XCTAssertEqualObjects(@".sq", [NSString stringWithCString:path encoding:NSUTF8StringEncoding].lastPathComponent);
+
+    __weak Tests *weakSelf = self;
+
+    [self addTeardownBlock:^{
+        [weakSelf.manager removeItemAtPath:file error:nil];
+        free(path);
+    }];
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
+- (void)test_findSQFile_git {
+    NSURL *url = [[NSBundle bundleForClass:self.class] URLForResource:@".sq" withExtension:nil];
+    NSString *json = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
+    NSString *directory = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@"/folder"];
+    NSString *file = [self.manager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
+    NSString *gitFile = [directory stringByAppendingPathComponent:@".git"];
+
+    [self.manager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:nil];
+    [json writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    [self.manager createFileAtPath:gitFile contents:nil attributes:nil];
+    [self.manager changeCurrentDirectoryPath:directory];
+
+    char *path = NULL;
+
+    find(&path);
+
+    if (path) XCTAssert(false);
+
+    __weak Tests *weakSelf = self;
+
+    [self addTeardownBlock:^{
+        [weakSelf.manager removeItemAtPath:file error:nil];
+        [weakSelf.manager removeItemAtPath:gitFile error:nil];
+        free(path);
     }];
 }
 
