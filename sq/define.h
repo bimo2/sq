@@ -9,6 +9,7 @@
 #define DEFINE_H
 
 #define SQ_FILE ".sq"
+#define SQ_DOCS_URL "https://github.com/bimo2/sq"
 
 #define VERSION "0.1"
 #define BUILD_VERSION "1A"

@@ -38,8 +38,10 @@
 
 - (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error  {
     NSString *file = [fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
+    NSString *contents = [NSString stringWithFormat:@SQ_DEFAULT, fileManager.currentDirectoryPath.lastPathComponent];
     
-    [@SQ_DEFAULT writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:error];
+    [contents writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:error];
+    [SQPrint line:[NSString stringWithFormat:@"%@ file created, learn more: %@", @SQ_FILE, @SQ_DOCS_URL]];
 }
 
 @end
