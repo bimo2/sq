@@ -31,9 +31,16 @@
 
 - (void)docs {
     [SQPrint info:[NSString stringWithFormat:@"(%@)\n-", self.context.repo ?: @"null"] context:nil];
-    [SQPrint line:@"<url>            clone git repository"];
-    [SQPrint line:@"init             create .sq file"];
-    [SQPrint line:@"--version, -v"];
+    
+    if (self.context) {
+        for (NSString *script in self.context.scripts) {
+            [SQPrint line:script.description];
+        }
+    } else {
+        [SQPrint line:@"<url>            clone git repository"];
+        [SQPrint line:@"init             create .sq file"];
+        [SQPrint line:@"--version, -v"];
+    }
 }
 
 - (void)version {

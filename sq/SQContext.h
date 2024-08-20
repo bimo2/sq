@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) NSInteger version;
 @property (nonatomic, copy, readonly) NSString *repo;
 @property (nonatomic, readonly) NSArray *binaries;
+@property (nonatomic, readonly) NSArray *scripts;
 
 - (instancetype)initWithData:(NSData *)data error:(NSError **)error;
 

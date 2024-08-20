@@ -19,6 +19,8 @@
 		37739F1E2C7054090081459E /* SQError.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F0D2C6FF20F0081459E /* SQError.m */; };
 		37739F202C7165D00081459E /* SQContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F1F2C7165D00081459E /* SQContext.m */; };
 		37739F222C7165DD0081459E /* SQContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F1F2C7165D00081459E /* SQContext.m */; };
+		37739F252C74CA530081459E /* SQScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F242C74CA530081459E /* SQScript.m */; };
+		37739F262C74CF1D0081459E /* SQScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F242C74CA530081459E /* SQScript.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,6 +51,8 @@
 		37739F192C7053880081459E /* .sq */ = {isa = PBXFileReference; lastKnownFileType = text; path = .sq; sourceTree = "<group>"; };
 		37739F1F2C7165D00081459E /* SQContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQContext.m; sourceTree = "<group>"; };
 		37739F212C7165D90081459E /* SQContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQContext.h; sourceTree = "<group>"; };
+		37739F232C74CA390081459E /* SQScript.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQScript.h; sourceTree = "<group>"; };
+		37739F242C74CA530081459E /* SQScript.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQScript.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +103,8 @@
 				37739F122C6FF69E0081459E /* SQPrint.m */,
 				37739F162C6FFE390081459E /* SQREPL.h */,
 				37739F142C6FFE250081459E /* SQREPL.m */,
+				37739F232C74CA390081459E /* SQScript.h */,
+				37739F242C74CA530081459E /* SQScript.m */,
 				37739EEC2C6FE34B0081459E /* main.m */,
 			);
 			path = sq;
@@ -216,6 +222,7 @@
 				37739F152C6FFE250081459E /* SQREPL.m in Sources */,
 				37739EED2C6FE34B0081459E /* main.m in Sources */,
 				37739F202C7165D00081459E /* SQContext.m in Sources */,
+				37739F252C74CA530081459E /* SQScript.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +232,7 @@
 			files = (
 				37739F1C2C7054030081459E /* SQREPL.m in Sources */,
 				37739F1D2C7054060081459E /* SQPrint.m in Sources */,
+				37739F262C74CF1D0081459E /* SQScript.m in Sources */,
 				37739F1E2C7054090081459E /* SQError.m in Sources */,
 				37739F1B2C7053F50081459E /* main.m in Sources */,
 				37739F082C6FE8D00081459E /* tests.m in Sources */,
