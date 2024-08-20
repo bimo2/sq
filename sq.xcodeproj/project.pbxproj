@@ -21,6 +21,7 @@
 		37739F222C7165DD0081459E /* SQContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F1F2C7165D00081459E /* SQContext.m */; };
 		37739F252C74CA530081459E /* SQScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F242C74CA530081459E /* SQScript.m */; };
 		37739F262C74CF1D0081459E /* SQScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F242C74CA530081459E /* SQScript.m */; };
+		37739F282C74F0FD0081459E /* SQToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F272C74F0FD0081459E /* SQToken.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +54,8 @@
 		37739F212C7165D90081459E /* SQContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQContext.h; sourceTree = "<group>"; };
 		37739F232C74CA390081459E /* SQScript.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQScript.h; sourceTree = "<group>"; };
 		37739F242C74CA530081459E /* SQScript.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQScript.m; sourceTree = "<group>"; };
+		37739F272C74F0FD0081459E /* SQToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SQToken.m; sourceTree = "<group>"; };
+		37739F292C74F1070081459E /* SQToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQToken.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +108,8 @@
 				37739F142C6FFE250081459E /* SQREPL.m */,
 				37739F232C74CA390081459E /* SQScript.h */,
 				37739F242C74CA530081459E /* SQScript.m */,
+				37739F292C74F1070081459E /* SQToken.h */,
+				37739F272C74F0FD0081459E /* SQToken.m */,
 				37739EEC2C6FE34B0081459E /* main.m */,
 			);
 			path = sq;
@@ -217,6 +222,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37739F282C74F0FD0081459E /* SQToken.m in Sources */,
 				37739F132C6FF69E0081459E /* SQPrint.m in Sources */,
 				37739F0E2C6FF20F0081459E /* SQError.m in Sources */,
 				37739F152C6FFE250081459E /* SQREPL.m in Sources */,

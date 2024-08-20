@@ -17,6 +17,8 @@
 
 - (instancetype)initWithName:(NSString *)name info:(NSString *)info shell:(NSString *)shell commands:(NSArray *)commands;
 
+- (NSString *)signature;
+
 @end
 
 #endif // SQSCRIPT_H

@@ -10,6 +10,7 @@
 #import "SQContext.h"
 #import "SQError.h"
 #import "SQPrint.h"
+#import "SQScript.h"
 
 #import "SQREPL.h"
 
@@ -33,8 +34,8 @@
     [SQPrint info:[NSString stringWithFormat:@"(%@)\n-", self.context.repo ?: @"null"] context:nil];
     
     if (self.context) {
-        for (NSString *script in self.context.scripts) {
-            [SQPrint line:script.description];
+        for (SQScript *script in self.context.scripts) {
+            [SQPrint line:script.signature];
         }
     } else {
         [SQPrint line:@"<url>            clone git repository"];
