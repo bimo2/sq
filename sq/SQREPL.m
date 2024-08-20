@@ -38,7 +38,7 @@
         }
     } else {
         [SQPrint line:@"<url>            clone git repository"];
-        [SQPrint line:@"init             create .sq file"];
+        [SQPrint line:@".                create .sq file"];
         [SQPrint line:@"--version, -v"];
     }
 }

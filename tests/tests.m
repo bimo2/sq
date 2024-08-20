@@ -7,6 +7,7 @@
 
 #import <XCTest/XCTest.h>
 #import "define.h"
+#import "SQContext.h"
 #import "testing.h"
 
 @interface Tests : XCTestCase
@@ -97,11 +98,14 @@
 
 - (void)test_defaultSQFile_valid {
     NSError *error;
-    NSJSONReadingOptions options = NSJSONReadingJSON5Allowed | NSJSONReadingTopLevelDictionaryAssumed;
-    id json = [NSJSONSerialization JSONObjectWithData:[@SQ_DEFAULT dataUsingEncoding:NSUTF8StringEncoding] options:options error:&error];
+    NSString *contents = [NSString stringWithFormat:@SQ_DEFAULT, @"objc"];
+    SQContext *context = [[SQContext alloc] initWithData:[contents dataUsingEncoding:NSUTF8StringEncoding] error:&error];
     
     XCTAssertNil(error);
-    XCTAssert([json isKindOfClass:NSDictionary.class]);
+    XCTAssertEqual(context.version, 0);
+    XCTAssertEqualObjects(context.repo, @"objc");
+    XCTAssertEqual(context.binaries.count, 2);
+    XCTAssertEqual(context.scripts.count, 4);
 }
 
 @end
