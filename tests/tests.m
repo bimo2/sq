@@ -7,8 +7,8 @@
 
 #import <XCTest/XCTest.h>
 #import "define.h"
-#import "SQContext.h"
 #import "testing.h"
+#import "SQContext.h"
 
 @interface Tests : XCTestCase
 

@@ -19,6 +19,8 @@
 
 - (NSString *)signature;
 
+- (NSArray *)replaceWithOptions:(NSArray *)options error:(NSError **)error;
+
 @end
 
 #endif // SQSCRIPT_H

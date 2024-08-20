@@ -20,7 +20,7 @@
 
 - (void)cloneGitRepositoryWithURL:(NSString *)url error:(NSError **)error;
 
-- (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error ;
+- (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error;
 
 @end
 

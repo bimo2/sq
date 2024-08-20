@@ -80,7 +80,7 @@
     [SQPrint line:[NSString stringWithFormat:@"cd ~/%@/%@", gitURL.host, gitURL.lastPathComponent.stringByDeletingPathExtension]];
 }
 
-- (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error  {
+- (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error {
     NSString *file = [fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
     NSString *contents = [NSString stringWithFormat:@SQ_DEFAULT, fileManager.currentDirectoryPath.lastPathComponent];
     

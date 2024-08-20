@@ -22,6 +22,7 @@
 		37739F252C74CA530081459E /* SQScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F242C74CA530081459E /* SQScript.m */; };
 		37739F262C74CF1D0081459E /* SQScript.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F242C74CA530081459E /* SQScript.m */; };
 		37739F282C74F0FD0081459E /* SQToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F272C74F0FD0081459E /* SQToken.m */; };
+		37739F2A2C7500FD0081459E /* SQToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 37739F272C74F0FD0081459E /* SQToken.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -237,6 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37739F1C2C7054030081459E /* SQREPL.m in Sources */,
+				37739F2A2C7500FD0081459E /* SQToken.m in Sources */,
 				37739F1D2C7054060081459E /* SQPrint.m in Sources */,
 				37739F262C74CF1D0081459E /* SQScript.m in Sources */,
 				37739F1E2C7054090081459E /* SQError.m in Sources */,
