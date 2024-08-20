@@ -33,11 +33,11 @@
     
     _version = [version integerValue] ?: SQ_SCHEMA;
     
-    id repo = object[@"git"];
+    id project = object[@"git"];
     
-    if (repo && ![repo isKindOfClass:NSString.class]) return block(error, @"expected JSON5 string: git");
+    if (project && ![project isKindOfClass:NSString.class]) return block(error, @"expected JSON5 string: git");
     
-    _repo = repo;
+    _project = project;
     
     id binaries = object[@"require"];
     

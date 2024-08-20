@@ -11,7 +11,7 @@
 @interface SQContext : NSObject
 
 @property (nonatomic, readonly) NSInteger version;
-@property (nonatomic, copy, readonly) NSString *repo;
+@property (nonatomic, copy, readonly) NSString *project;
 @property (nonatomic, readonly) NSArray *binaries;
 @property (nonatomic, readonly) NSArray *scripts;
 

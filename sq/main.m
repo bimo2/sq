@@ -8,22 +8,11 @@
 #import <Foundation/Foundation.h>
 #import "define.h"
 #import "SQError.h"
-#import "SQPrint.h"
 #import "SQREPL.h"
 
 #ifdef TESTING
 #import "testing.h"
 #endif
-
-int fail(int code, const char *description) {
-    if (description) {
-        [SQPrint error:[NSString stringWithCString:description encoding:NSUTF8StringEncoding]];
-    } else {
-        [SQPrint error:[NSString stringWithFormat:@"(%d)", code]];
-    }
-    
-    return code;
-}
 
 int find(char **url) {
     NSArray *extensions = @[ @SQ_FILE ];
@@ -56,6 +45,18 @@ int find(char **url) {
     }
     
     return 0;
+}
+
+int fail(int code, const char *description) {
+    if (description) {
+        PRINT_ERROR(description);
+    } else {
+        NSString *string = [NSString stringWithFormat:@"(%d)", code];
+        
+        PRINT_ERROR(string.UTF8String);
+    }
+    
+    return code;
 }
 
 int main(int argc, const char *argv[]) {

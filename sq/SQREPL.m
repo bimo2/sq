@@ -9,7 +9,6 @@
 #import "define.h"
 #import "SQContext.h"
 #import "SQError.h"
-#import "SQPrint.h"
 #import "SQScript.h"
 
 #import "SQREPL.h"
@@ -31,16 +30,36 @@
 }
 
 - (void)docs {
-    [SQPrint info:[NSString stringWithFormat:@"(%@)\n-", self.context.repo ?: @"null"] context:nil];
+    NSString *header = [NSString stringWithFormat:@"(%@)\n-", self.context.project ?: @"null"];
+    
+    PRINT_HEADER(header.UTF8String);
     
     if (self.context) {
+        NSInteger maxLength = 0;
+        NSInteger index = 1;
+        NSInteger count = self.context.scripts.count;
+        
         for (SQScript *script in self.context.scripts) {
-            [SQPrint line:script.signature];
+            NSString *signature = script.signature;
+            
+            if (signature.length > maxLength) maxLength = signature.length;
+        }
+        
+        NSArray *sorted = [self.context.scripts sortedArrayUsingComparator:^NSComparisonResult(SQScript *a, SQScript *b) {
+            return [a.name compare:b.name];
+        }];
+        
+        for (SQScript *script in sorted) {
+            NSString *leading = [script.signature stringByPaddingToLength:maxLength + 4 withString:@" " startingAtIndex:0];
+            NSString *line = [leading stringByAppendingString:script.info ?: @""];
+            
+            PRINT(line.UTF8String);
+            index++;
         }
     } else {
-        [SQPrint line:@"<url>            clone git repository"];
-        [SQPrint line:@".                create .sq file"];
-        [SQPrint line:@"--version, -v"];
+        PRINT(@"<url>            clone git repository".UTF8String);
+        PRINT(@".                create .sq file".UTF8String);
+        PRINT(@"--version, -v".UTF8String);
     }
 }
 
@@ -51,7 +70,9 @@
     NSString *arch = @"intel";
 #endif
     
-    [SQPrint line:[NSString stringWithFormat:@"sq.%@ %s (%s%d)", arch, VERSION, BUILD_VERSION, BUILD_NUMBER]];
+    NSString *string = [NSString stringWithFormat:@"%@ %s (%s%d)", arch, VERSION, BUILD_VERSION, BUILD_NUMBER];
+    
+    PRINT(string.UTF8String);
 }
 
 - (void)cloneGitRepositoryWithURL:(NSString *)url error:(NSError **)error {
@@ -77,15 +98,21 @@
         return;
     }
     
-    [SQPrint line:[NSString stringWithFormat:@"cd ~/%@/%@", gitURL.host, gitURL.lastPathComponent.stringByDeletingPathExtension]];
+    NSString *command = [NSString stringWithFormat:@"cd ~/%@/%@", gitURL.host, gitURL.lastPathComponent.stringByDeletingPathExtension];
+    
+    PRINT_COMMAND(command.UTF8String);
 }
 
 - (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error {
+    NSString *project = fileManager.currentDirectoryPath.lastPathComponent;
     NSString *file = [fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
     NSString *contents = [NSString stringWithFormat:@SQ_DEFAULT, fileManager.currentDirectoryPath.lastPathComponent];
+    NSString *caption = [NSString stringWithFormat:@"learn more: %@", @SQ_DOCS_URL];
     
     [contents writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:error];
-    [SQPrint line:[NSString stringWithFormat:@"%@ file created, learn more: %@", @SQ_FILE, @SQ_DOCS_URL]];
+    PRINT_HEADER(project.UTF8String);
+    PRINT_FILE;
+    PRINT(caption.UTF8String);
 }
 
 @end
