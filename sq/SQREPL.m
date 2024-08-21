@@ -37,7 +37,6 @@
     if (self.context) {
         NSInteger maxLength = 0;
         NSInteger index = 1;
-        NSInteger count = self.context.scripts.count;
         
         for (SQScript *script in self.context.scripts) {
             NSString *signature = script.signature;
@@ -113,6 +112,51 @@
     PRINT_HEADER(project.UTF8String);
     PRINT_FILE;
     PRINT(caption.UTF8String);
+}
+
+- (void)evaluateWithName:(NSString *)name options:(NSArray *)options error:(NSError **)error {
+    if (!self.context) {
+        *error = [NSError errorWithCode:SQREPLError reason:[NSString stringWithFormat:@"not found: %@", @SQ_FILE]];
+        
+        return;
+    }
+    
+    SQScript *script;
+    
+    for (SQScript *object in self.context.scripts) {
+        if ([object.name isEqualToString:name]) {
+            script = object;
+            
+            break;
+        }
+    }
+    
+    if (!script) {
+        *error = [NSError errorWithCode:SQREPLError reason:[NSString stringWithFormat:@"undefined: %@", name]];
+        
+        return;
+    }
+    
+    NSDate *start = NSDate.date;
+    NSArray *lines = [script replaceWithOptions:options error:error];
+    
+    if (*error) return;
+    
+    for (NSString *line in lines) {
+        PRINT_INFO(name.UTF8String, line.UTF8String);
+        
+        NSInteger code = system([NSString stringWithFormat:@"cd %@ && %@ -c '%@'", self.path.stringByDeletingLastPathComponent, script.shell, line].UTF8String);
+        
+        if (code) {
+            *error = [NSError errorWithCode:code reason:[NSString stringWithFormat:@"failed (%li)", code]];
+            
+            return;
+        }
+    }
+    
+    NSNumber *elapsed = [NSNumber numberWithDouble:start.timeIntervalSinceNow * -1];
+    
+    PRINT_TIME(elapsed.doubleValue);
 }
 
 @end

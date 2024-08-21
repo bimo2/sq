@@ -98,12 +98,14 @@ int main(int argc, const char *argv[]) {
             [options addObject:value];
         }
         
-        if ([command hasPrefix:@"http"] && [command hasSuffix:@".git"]) {
+        if ([command hasPrefix:@"https://"] && [command hasSuffix:@".git"]) {
             [app cloneGitRepositoryWithURL:command error:&error];
         } else if (!app.path && [command isEqualToString:@"."]) {
             [app writeDefaultSQFileWithFileManager:NSFileManager.defaultManager error:&error];
         } else if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"]) {
             [app version];
+        } else {
+            [app evaluateWithName:command options:options error:&error];
         }
         
         if (error) return fail((int) error.code, error.localizedDescription.UTF8String);

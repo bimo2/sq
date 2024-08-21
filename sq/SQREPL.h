@@ -22,6 +22,8 @@
 
 - (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error;
 
+- (void)evaluateWithName:(NSString *)name options:(NSArray *)options error:(NSError **)error;
+
 @end
 
 #endif // SQREPL_H

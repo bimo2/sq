@@ -103,7 +103,7 @@
     
     XCTAssertNil(error);
     XCTAssertEqual(context.version, 0);
-    XCTAssertEqualObjects(context.repo, @"objc");
+    XCTAssertEqualObjects(context.project, @"objc");
     XCTAssertEqual(context.binaries.count, 2);
     XCTAssertEqual(context.scripts.count, 4);
 }
