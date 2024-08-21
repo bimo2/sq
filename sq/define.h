@@ -32,7 +32,7 @@
 "git: '%@',\n" \
 "require: [\n" \
 "  'git',\n" \
-"  'nano',\n" \
+"  'nano'\n" \
 "],\n" \
 "cli: {\n" \
 "  install: {\n" \

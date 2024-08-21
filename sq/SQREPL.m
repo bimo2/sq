@@ -55,6 +55,12 @@
             PRINT(line.UTF8String);
             index++;
         }
+        
+        NSArray *errors = self.resolve;
+        
+        if (errors.count) {
+            for (NSError *error in errors) PRINT_ERROR(error.localizedDescription.UTF8String);
+        }
     } else {
         PRINT(@"<url>            clone git repository".UTF8String);
         PRINT(@".                create .sq file".UTF8String);
@@ -157,6 +163,32 @@
     NSNumber *elapsed = [NSNumber numberWithDouble:start.timeIntervalSinceNow * -1];
     
     PRINT_TIME(elapsed.doubleValue);
+}
+
+- (NSArray *)resolve {
+    if (!self.context) return nil;
+    
+    NSMutableArray *errors = NSMutableArray.array;
+    
+    for (NSString *bin in self.context.binaries) {
+        NSInteger status;
+        
+        if (bin.isAbsolutePath) {
+            status = ![NSFileManager.defaultManager fileExistsAtPath:bin];
+        } else {
+            NSString *command = [NSString stringWithFormat:@"sh -c 'which -s %@'", bin];
+            
+            status = system(command.UTF8String);
+        }
+        
+        if (status) {
+            NSError *error = [NSError errorWithCode:SQSystemError reason:[NSString stringWithFormat:@"%@ not found", bin]];
+            
+            [errors addObject:error];
+        }
+    }
+    
+    return [NSArray arrayWithArray:errors];
 }
 
 @end

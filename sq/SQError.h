@@ -14,6 +14,7 @@ enum {
     SQGitError,
     SQSyntaxError,
     SQREPLError,
+    SQSystemError,
 };
 
 @interface NSError (SQError)
