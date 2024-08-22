@@ -14,7 +14,11 @@ sq is an open source version of Square's internal `sq` command line tool for run
 
 ### Install
 
-You can download all precompiled binaries from the [GitHub Releases](https://github.com/bimo2/sq/releases) section.
+You can download all precompiled binaries from the [GitHub Releases](https://github.com/bimo2/sq/releases) section or using the install script (recommended):
+
+```sh
+curl -sf https://raw.githubusercontent.com/bimo2/sq/main/install | sh
+```
 
 ### TLDR
 
@@ -32,6 +36,9 @@ sq build
 
 # test the debug binary
 ./xcode/Build/Products/Debug/sq
+
+# test the install script
+curl -sf file://$(pwd)/install | sh
 ```
 
 > [!IMPORTANT]
