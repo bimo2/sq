@@ -8,6 +8,8 @@
 #ifndef DEFINE_H
 #define DEFINE_H
 
+#define ENV_FILE ".env"
+
 #define SQ_FILE ".sq"
 #define SQ_DOCS_URL "https://github.com/bimo2/sq"
 #define SQ_SCHEMA 0

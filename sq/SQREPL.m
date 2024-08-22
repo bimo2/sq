@@ -15,16 +15,45 @@
 
 @interface SQREPL ()
 
-@property (nonatomic) SQContext *context;
+@property (nonatomic, readonly) SQContext *context;
+@property (nonatomic, readonly) NSDictionary *secrets;
 
 @end
 
 @implementation SQREPL
 
-- (instancetype)initWitPath:(NSString *)path error:(NSError **)error {
+- (instancetype)initWithPath:(NSString *)path error:(NSError **)error {
     _path = path;
     
-    if (path) _context = [[SQContext alloc] initWithData:[NSData dataWithContentsOfFile:path] error:error];
+    if (path) {
+        _context = [[SQContext alloc] initWithData:[NSData dataWithContentsOfFile:path] error:error];
+        
+        NSString *env = [path.stringByDeletingLastPathComponent stringByAppendingPathComponent:@ENV_FILE];
+        NSMutableDictionary *secrets = NSMutableDictionary.dictionary;
+        
+        if ([NSFileManager.defaultManager fileExistsAtPath:env]) {
+            NSString *contents = [NSString stringWithContentsOfFile:env encoding:NSUTF8StringEncoding error:error];
+            
+            if (contents) {
+                NSArray *lines = [contents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                
+                for (NSString *line in lines) {
+                    if ([line hasPrefix:@"#"]) continue;
+                    
+                    NSArray *components = [line componentsSeparatedByString:@"="];
+                    
+                    if (components.count == 2) {
+                        NSString *key = [components.firstObject stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+                        NSString *value = [components.lastObject stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+                        
+                        secrets[key] = value;
+                    }
+                }
+            }
+        }
+        
+        _secrets = [NSDictionary dictionaryWithDictionary:secrets];
+    }
     
     return self;
 }

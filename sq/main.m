@@ -78,7 +78,7 @@ int main(int argc, const char *argv[]) {
             free(url);
         }
         
-        SQREPL *app = [[SQREPL alloc] initWitPath:path error:&error];
+        SQREPL *app = [[SQREPL alloc] initWithPath:path error:&error];
         
         if (error) return fail((int) error.code, error.localizedDescription.UTF8String);
         if (!app) return fail(SQObjCError, NULL);
