@@ -109,6 +109,8 @@
 }
 
 - (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error {
+    if (self.path) return;
+    
     NSString *project = fileManager.currentDirectoryPath.lastPathComponent;
     NSString *file = [fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
     NSString *contents = [NSString stringWithFormat:@SQ_DEFAULT, fileManager.currentDirectoryPath.lastPathComponent];

@@ -100,7 +100,7 @@ int main(int argc, const char *argv[]) {
         
         if ([command hasPrefix:@"https://"] && [command hasSuffix:@".git"]) {
             [app cloneGitRepositoryWithURL:command error:&error];
-        } else if (!app.path && [command isEqualToString:@"."]) {
+        } else if ([command isEqualToString:@"."]) {
             [app writeDefaultSQFileWithFileManager:NSFileManager.defaultManager error:&error];
         } else if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"]) {
             [app version];

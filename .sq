@@ -1,0 +1,25 @@
+sq: 0,
+git: 'sq',
+require: [
+  'buildkite-agent',
+  'git',
+  'xcodebuild'
+],
+cli: {
+  build: {
+    d: 'build sq binary',
+    zsh: 'xcodebuild clean build -project sq.xcodeproj -arch arm64 -scheme sq -configuration #config -> Debug# -derivedDataPath ./xcode'
+  },
+  test: {
+    d: 'run unit tests',
+    zsh: 'xcodebuild test -project sq.xcodeproj -scheme tests'
+  },
+  clean: {
+    d: 'delete untracked files',
+    zsh: 'git clean -dfxi -e .env -e xcschemes'
+  },
+  buildkite: {
+    d: 'start buildkite agent',
+    zsh: 'buildkite-agent start --token 2b8ce25299f984f75bd2dd1bacfc0f2d23fed2b13cbf5f3b0a'
+  }
+}
