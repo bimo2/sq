@@ -14,8 +14,8 @@
 #define SQ_DOCS_URL "https://github.com/bimo2/sq"
 #define SQ_SCHEMA 0
 
-#define VERSION "0.1"
-#define BUILD_VERSION "1A"
+#define VERSION "0.2"
+#define BUILD_VERSION "2A"
 
 #ifndef BUILD_NUMBER
 #define BUILD_NUMBER 0
