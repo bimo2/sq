@@ -24,7 +24,7 @@
 
 - (NSString *)signature {
     NSString *result = [NSString stringWithString:self.name];
-    NSArray *tokens = self.tokenize;
+    NSArray *tokens = [self tokenizeWithFilter:SQTokenTypeOption];
     
     for (SQToken *token in tokens) {
         NSString *format = token.isRequired ? @" <%@!>" : @" <%@>";
@@ -35,9 +35,19 @@
     return result;
 }
 
-- (NSArray *)replaceWithOptions:(NSArray *)options error:(NSError **)error {
+- (NSSet *)variables {
+    NSMutableSet *map = NSMutableSet.set;
+    NSArray *tokens = [self tokenizeWithFilter:SQTokenTypeSecret];
+    
+    for (SQToken *token in tokens) [map addObject:token.name];
+    
+    return [NSSet setWithSet:map];
+}
+
+- (NSArray *)replaceWithOptions:(NSArray *)options secrets:(NSDictionary *)secrets error:(NSError **)error {
     NSMutableArray *lines = [NSMutableArray arrayWithArray:self.commands];
-    NSArray *tokens = self.tokenize;
+    SQTokenType filter = SQTokenTypeOption | SQTokenTypeSecret;
+    NSArray *tokens = [self tokenizeWithFilter:filter];
     
     for (int i = 0; i < tokens.count; i++) {
         NSInteger index = tokens.count - (i + 1);
@@ -72,17 +82,21 @@
         [lines replaceObjectAtIndex:token.lineNumber withObject:update];
     }
     
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\s\\s+(?=(?:[^\"]*(\")[^\"]*\\1)*[^\"]*$)" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRegularExpression *regex1 = [NSRegularExpression regularExpressionWithPattern:@"(^\\s+|\\s+$)" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRegularExpression *regex2 = [NSRegularExpression regularExpressionWithPattern:@"\\s\\s+(?=(?:[^\"]*(\")[^\"]*\\1)*[^\"]*$)" options:NSRegularExpressionCaseInsensitive error:nil];
     
-    for (NSMutableString *line in lines) [regex replaceMatchesInString:line options:0 range:NSMakeRange(0, line.length) withTemplate:@" "];
+    for (NSMutableString *line in lines) {
+        [regex1 replaceMatchesInString:line options:0 range:NSMakeRange(0, line.length) withTemplate:@""];
+        [regex2 replaceMatchesInString:line options:0 range:NSMakeRange(0, line.length) withTemplate:@" "];
+    }
     
     return [NSArray arrayWithArray:lines];
 }
 
-- (NSArray *)tokenize {
+- (NSArray *)tokenizeWithFilter:(SQTokenType)filter {
     NSMutableArray *lines = [NSMutableArray arrayWithArray:self.commands];
     NSMutableArray *tokens = NSMutableArray.array;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#(?<=#)((\\w+[!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#(?<=#)((\\w+[!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#|&\\w+" options:NSRegularExpressionCaseInsensitive error:nil];
     
     for (int i = 0; i < lines.count; i++) {
         NSString *line = [lines objectAtIndex:i];
@@ -91,7 +105,7 @@
         for (NSTextCheckingResult *match in matches) {
             SQToken *token = [[SQToken alloc] initWithTextMatch:match line:line lineNumber:i];
             
-            [tokens addObject:token];
+            if ((filter & token.type) != 0) [tokens addObject:token];
         }
     }
     

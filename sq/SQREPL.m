@@ -177,7 +177,7 @@
     }
     
     NSDate *start = NSDate.date;
-    NSArray *lines = [script replaceWithOptions:options error:error];
+    NSArray *lines = [script replaceWithOptions:options secrets:self.secrets error:error];
     
     if (*error) return;
     
@@ -218,6 +218,20 @@
             NSError *error = [NSError errorWithCode:SQSystemError reason:[NSString stringWithFormat:@"%@ not found", bin]];
             
             [errors addObject:error];
+        }
+    }
+    
+    for (SQScript *script in self.context.scripts) {
+        NSSet *variables = script.variables;
+        
+        if (!variables.count) continue;
+        
+        for (NSString *variable in variables) {
+            if (![self.secrets valueForKey:variable]) {
+                NSError *error = [NSError errorWithCode:SQUserError reason:[NSString stringWithFormat:@"%@ not defined", variable]];
+                
+                [errors addObject:error];
+            }
         }
     }
     

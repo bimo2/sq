@@ -9,6 +9,7 @@
 #import "define.h"
 #import "testing.h"
 #import "SQContext.h"
+#import "SQScript.h"
 
 @interface Tests : XCTestCase
 
@@ -106,6 +107,59 @@
     XCTAssertEqualObjects(context.project, @"objc");
     XCTAssertEqual(context.binaries.count, 2);
     XCTAssertEqual(context.scripts.count, 4);
+}
+
+- (void)test_tokenizeOptions {
+    NSArray *commands = @[ @"git add #file#", @"git commit -m #message#", @"git push" ];
+    SQScript *script = [[SQScript alloc] initWithName:@"test" info:nil shell:@"sh" commands:commands];
+    NSError *error;
+    
+    NSArray *result = [script replaceWithOptions:@[] secrets:NSDictionary.dictionary error:&error];
+    NSArray *expected = @[ @"git add", @"git commit -m", @"git push" ];
+    
+    XCTAssertEqualObjects(result, expected);
+    
+    NSArray *result2 = [script replaceWithOptions:@[ @"readme.txt", @"update readme" ] secrets:NSDictionary.dictionary error:&error];
+    NSArray *expected2 = @[ @"git add readme.txt", @"git commit -m \"update readme\"", @"git push" ];
+    
+    XCTAssertEqualObjects(result2, expected2);
+    
+    NSArray *result3 = [script replaceWithOptions:@[ @"-", @"update readme" ] secrets:NSDictionary.dictionary error:&error];
+    NSArray *expected3 = @[ @"git add", @"git commit -m \"update readme\"", @"git push" ];
+    
+    XCTAssertEqualObjects(result3, expected3);
+}
+
+- (void)test_tokenizeOptions_required {
+    NSArray *commands = @[ @"git add #file -> .#", @"git commit -m #message!#", @"git push #flag#" ];
+    SQScript *script = [[SQScript alloc] initWithName:@"test" info:nil shell:@"sh" commands:commands];
+    NSError *error;
+    
+    NSArray *result = [script replaceWithOptions:@[ @"readme.txt", @"update readme" ] secrets:NSDictionary.dictionary error:&error];
+    NSArray *expected = @[ @"git add readme.txt", @"git commit -m \"update readme\"", @"git push" ];
+    
+    XCTAssertEqualObjects(result, expected);
+    
+    NSArray *result2 = [script replaceWithOptions:@[ @"readme.txt" ] secrets:NSDictionary.dictionary error:&error];
+    NSArray *expected2 = NSArray.array;
+    
+    XCTAssertEqualObjects(result2, expected2);
+    
+    NSArray *result3 = [script replaceWithOptions:@[ @"-", @"update readme", @"-f" ] secrets:NSDictionary.dictionary error:&error];
+    NSArray *expected3 = @[ @"git add .", @"git commit -m \"update readme\"", @"git push -f" ];
+    
+    XCTAssertEqualObjects(result3, expected3);
+}
+
+- (void)test_tokenizeOptions_secrets {
+    NSArray *commands = @[ @"git add #file -> .#", @"git commit -m #message!#", @"git config user.email &EMAIL", @"git push #flag#" ];
+    SQScript *script = [[SQScript alloc] initWithName:@"test" info:nil shell:@"sh" commands:commands];
+    NSError *error;
+    
+    NSArray *result = [script replaceWithOptions:@[ @"-", @"update readme" ] secrets:@{ @"EMAIL" : @"bimal@squareup.com" } error:&error];
+    NSArray *expected = @[ @"git add .", @"git commit -m \"update readme\"", @"git config user.email bimal@squareup.com", @"git push" ];
+    
+    XCTAssertEqualObjects(result, expected);
 }
 
 @end

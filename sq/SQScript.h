@@ -8,6 +8,8 @@
 #ifndef SQSCRIPT_H
 #define SQSCRIPT_H
 
+#import "SQToken.h"
+
 @interface SQScript : NSObject
 
 @property (nonatomic, copy, readonly) NSString *name;
@@ -19,7 +21,9 @@
 
 - (NSString *)signature;
 
-- (NSArray *)replaceWithOptions:(NSArray *)options error:(NSError **)error;
+- (NSSet *)variables;
+
+- (NSArray *)replaceWithOptions:(NSArray *)options secrets:(NSDictionary *)secrets error:(NSError **)error;
 
 @end
 
