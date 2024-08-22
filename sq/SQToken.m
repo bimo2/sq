@@ -32,7 +32,7 @@
     
     NSString *substring = [line substringWithRange:textMatch.range];
     
-    if ([substring hasPrefix:@"&"]) {
+    if ([substring hasPrefix:@"%"] && [substring hasSuffix:@"%"]) {
         _type = SQTokenTypeSecret;
     } else if ([substring hasPrefix:@"#"] && [substring hasSuffix:@"#"]) {
         _type = SQTokenTypeOption;

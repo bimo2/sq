@@ -20,6 +20,6 @@ cli: {
   },
   buildkite: {
     d: 'start buildkite agent',
-    zsh: 'buildkite-agent start --token 2b8ce25299f984f75bd2dd1bacfc0f2d23fed2b13cbf5f3b0a'
+    zsh: 'buildkite-agent start --token %BUILDKITE_TOKEN%'
   }
 }

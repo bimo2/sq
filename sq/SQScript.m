@@ -48,11 +48,27 @@
     NSMutableArray *lines = [NSMutableArray arrayWithArray:self.commands];
     SQTokenType filter = SQTokenTypeOption | SQTokenTypeSecret;
     NSArray *tokens = [self tokenizeWithFilter:filter];
+    __block NSInteger optionIndex = 0;
     
-    for (int i = 0; i < tokens.count; i++) {
-        NSInteger index = tokens.count - (i + 1);
-        SQToken *token = [tokens objectAtIndex:index];
-        NSString *option = options.count > index ? [options objectAtIndex:index] : @"-";
+    [tokens enumerateObjectsUsingBlock:^(SQToken *token, NSUInteger index, BOOL *stop) {
+        if (token.type == SQTokenTypeOption) optionIndex++;
+    }];
+    
+    for (SQToken *token in tokens.reverseObjectEnumerator) {
+        if (token.type == SQTokenTypeNone) continue;
+        
+        if (token.type == SQTokenTypeSecret) {
+            NSString *string = [secrets valueForKey:token.name] ?: @"";
+            NSString *update = [lines[token.lineNumber] stringByReplacingCharactersInRange:token.range withString:string];
+            
+            [lines replaceObjectAtIndex:token.lineNumber withObject:update];
+            
+            continue;
+        }
+        
+        if (--optionIndex < 0) break;
+        
+        NSString *option = options.count > optionIndex ? [options objectAtIndex:optionIndex] : @"-";
         
         if (![option isEqualToString:@"-"]) {
             NSString *string = [option containsString:@" "] ? [NSString stringWithFormat:@"\"%@\"", option] : option;
@@ -96,7 +112,7 @@
 - (NSArray *)tokenizeWithFilter:(SQTokenType)filter {
     NSMutableArray *lines = [NSMutableArray arrayWithArray:self.commands];
     NSMutableArray *tokens = NSMutableArray.array;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#(?<=#)((\\w+[!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#|&\\w+" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#(?<=#)((\\w+[!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#|%\\w+%" options:NSRegularExpressionCaseInsensitive error:nil];
     
     for (int i = 0; i < lines.count; i++) {
         NSString *line = [lines objectAtIndex:i];

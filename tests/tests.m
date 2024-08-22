@@ -152,12 +152,12 @@
 }
 
 - (void)test_tokenizeOptions_secrets {
-    NSArray *commands = @[ @"git add #file -> .#", @"git commit -m #message!#", @"git config user.email &EMAIL", @"git push #flag#" ];
+    NSArray *commands = @[ @"git add #file -> .#", @"git commit -m #message!#", @"git config user.email '%EMAIL%'", @"git push #flag#" ];
     SQScript *script = [[SQScript alloc] initWithName:@"test" info:nil shell:@"sh" commands:commands];
     NSError *error;
     
     NSArray *result = [script replaceWithOptions:@[ @"-", @"update readme" ] secrets:@{ @"EMAIL" : @"bimal@squareup.com" } error:&error];
-    NSArray *expected = @[ @"git add .", @"git commit -m \"update readme\"", @"git config user.email bimal@squareup.com", @"git push" ];
+    NSArray *expected = @[ @"git add .", @"git commit -m \"update readme\"", @"git config user.email 'bimal@squareup.com'", @"git push" ];
     
     XCTAssertEqualObjects(result, expected);
 }
