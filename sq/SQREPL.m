@@ -28,7 +28,9 @@
     if (path) {
         _context = [[SQContext alloc] initWithData:[NSData dataWithContentsOfFile:path] error:error];
         
-        NSString *env = [path.stringByDeletingLastPathComponent stringByAppendingPathComponent:@ENV_FILE];
+        if (*error) return nil;
+        
+        NSString *env = [path.stringByDeletingLastPathComponent stringByAppendingPathComponent:self.context.env];
         NSMutableDictionary *secrets = NSMutableDictionary.dictionary;
         
         if ([NSFileManager.defaultManager fileExistsAtPath:env]) {

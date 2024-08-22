@@ -12,6 +12,7 @@
 
 @property (nonatomic, readonly) NSInteger version;
 @property (nonatomic, copy, readonly) NSString *project;
+@property (nonatomic, copy, readonly) NSString *env;
 @property (nonatomic, readonly) NSArray *binaries;
 @property (nonatomic, readonly) NSArray *scripts;
 
