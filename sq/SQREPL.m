@@ -142,13 +142,13 @@
 - (void)writeDefaultSQFileWithFileManager:(NSFileManager *)fileManager error:(NSError **)error {
     if (self.path) return;
     
-    NSString *project = fileManager.currentDirectoryPath.lastPathComponent;
+    NSString *header = [NSString stringWithFormat:@"(%@)\n", fileManager.currentDirectoryPath.lastPathComponent];
     NSString *file = [fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
     NSString *contents = [NSString stringWithFormat:@SQ_DEFAULT, fileManager.currentDirectoryPath.lastPathComponent];
     NSString *caption = [NSString stringWithFormat:@"learn more: %@", @SQ_DOCS_URL];
     
     [contents writeToFile:file atomically:YES encoding:NSUTF8StringEncoding error:error];
-    PRINT_HEADER(project.UTF8String);
+    PRINT_HEADER(header.UTF8String);
     PRINT_FILE;
     PRINT(caption.UTF8String);
 }
