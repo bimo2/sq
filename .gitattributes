@@ -1,2 +1,3 @@
 # generated
-*.pbxproj    linguist-generated
+*.pbxproj            linguist-generated
+*.xcworkspacedata    linguist-generated
