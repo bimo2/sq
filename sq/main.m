@@ -42,6 +42,18 @@ int find(char **url) {
   return 0;
 }
 
+int fail(int code, const char *description) {
+  if (description) {
+    PRINT_ERROR(description);
+  } else {
+    NSString *string = [NSString stringWithFormat:@"(%d)", code];
+
+    PRINT_ERROR(string.UTF8String);
+  }
+
+  return code;
+}
+
 int main(int argc, const char * argv[]) {
   @autoreleasepool {
     char *url = NULL;
@@ -50,7 +62,7 @@ int main(int argc, const char * argv[]) {
     if (code) {
       free(url);
 
-      return code;
+      return fail(code, NULL);
     };
 
     NSString *path;
@@ -62,9 +74,23 @@ int main(int argc, const char * argv[]) {
 
     SQDX *app = [[SQDX alloc] initWithPath:path];
 
-    if (!app) return SQCError;
+    if (!app) return fail(SQCError, NULL);
+    if (argc < 2) return 0;
 
-    [app version];
+    NSString *command = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
+    NSMutableArray *options = NSMutableArray.array;
+
+    for (int i = 2; i < argc; i++) {
+      NSString *value = [NSString stringWithCString:argv[i] encoding:NSUTF8StringEncoding];
+
+      [options addObject:value];
+    }
+
+    if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"]) {
+      [app version];
+    } else {
+      PRINT_SQ(command.UTF8String);
+    }
   }
 
   return 0;
