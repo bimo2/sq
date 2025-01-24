@@ -66,14 +66,16 @@ int main(int argc, const char * argv[]) {
     };
 
     NSString *path;
+    NSError *error;
 
     if (url) {
       path = [NSString stringWithCString:url encoding:NSUTF8StringEncoding];
       free(url);
     }
 
-    SQDX *app = [[SQDX alloc] initWithPath:path];
+    SQDX *app = [[SQDX alloc] initWithPath:path error:&error];
 
+    if (error) return fail((int)error.code, error.localizedDescription.UTF8String);
     if (!app) return fail(SQCError, NULL);
     if (argc < 2) return 0;
 
@@ -86,11 +88,15 @@ int main(int argc, const char * argv[]) {
       [options addObject:value];
     }
 
-    if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"]) {
+    if ([command isEqualToString:@"."]) {
+      [app json5WithFileManager:NSFileManager.defaultManager error:&error];
+    } else if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"]) {
       [app version];
     } else {
       PRINT_SQ(command.UTF8String);
     }
+
+    if (error) return fail((int)error.code, error.localizedDescription.UTF8String);
   }
 
   return 0;
