@@ -8,6 +8,12 @@
 #ifndef DEFINE_H
 #define DEFINE_H
 
+#define VERSION "0.1"
+
+#ifndef COMMIT_SHA
+#define COMMIT_SHA "0000000"
+#endif
+
 #define SQ_FILE ".sq"
 
 #define PRINT(cstring) printf("%s\n", cstring)

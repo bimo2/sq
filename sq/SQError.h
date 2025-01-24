@@ -9,7 +9,8 @@
 #define SQERROR_H
 
 enum {
-  SQPathError = 100,
+  SQCError = 100,
+  SQPathError,
 };
 
 @interface NSError (SQError)

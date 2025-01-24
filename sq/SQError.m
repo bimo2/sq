@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import "SQError.h"
 
 @implementation NSError (SQError)

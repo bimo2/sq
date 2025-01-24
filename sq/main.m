@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "define.h"
+#import "SQDX.h"
 #import "SQError.h"
 
 int find(char **url) {
@@ -52,15 +53,18 @@ int main(int argc, const char * argv[]) {
       return code;
     };
 
+    NSString *path;
+
     if (url) {
-      PRINT(url);
+      path = [NSString stringWithCString:url encoding:NSUTF8StringEncoding];
       free(url);
     }
 
-    PRINT_SQ("objc");
-    PRINT_INFO("install", "...");
-    PRINT_TIME(0.0001);
-    PRINT_ERROR("100");
+    SQDX *app = [[SQDX alloc] initWithPath:path];
+
+    if (!app) return SQCError;
+
+    [app version];
   }
 
   return 0;
