@@ -53,9 +53,14 @@ int main(int argc, const char * argv[]) {
     };
 
     if (url) {
-      NSLog(@"%@", [NSString stringWithCString:url encoding:NSUTF8StringEncoding]);
+      PRINT(url);
       free(url);
     }
+
+    PRINT_SQ("objc");
+    PRINT_INFO("install", "...");
+    PRINT_TIME(0.0001);
+    PRINT_ERROR("100");
   }
 
   return 0;
