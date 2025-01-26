@@ -25,9 +25,9 @@
   _path = path;
 
   if (self.path) {
-    NSData *data = [NSData dataWithContentsOfFile:path];
+    NSData *fileData = [NSData dataWithContentsOfFile:path];
 
-    _context = [[SQContext alloc] initWithData:data error:error];
+    _context = [[SQContext alloc] initWithFileData:fileData error:error];
   }
 
   return self;
