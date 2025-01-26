@@ -38,6 +38,29 @@
 
   _project = project;
 
+  id binaries = object[@"require"];
+
+  if (!binaries) {
+    _binaries = NSArray.array;
+  } else if (![binaries isKindOfClass:NSArray.class]) {
+    return block(error, @"expected JSON5 array: require");
+  } else {
+    NSMutableArray *array = [NSMutableArray arrayWithArray:binaries];
+    NSInteger index = 0;
+
+    for (NSObject *item in array) {
+      if (![item isKindOfClass:NSString.class]) {
+        NSString *message = [NSString stringWithFormat:@"expected JSON5 string: require[%ld]", index];
+
+        return block(error, message);
+      }
+
+      index++;
+    }
+
+    _binaries = [NSArray arrayWithArray:array];
+  }
+
   return self;
 }
 

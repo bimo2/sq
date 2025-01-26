@@ -12,6 +12,7 @@
 
 @property (nonatomic) NSInteger version;
 @property (nonatomic, copy) NSString *project;
+@property (nonatomic, readonly) NSArray *binaries;
 
 - (instancetype)initWithData:(NSData *)data error:(NSError **)error;
 
