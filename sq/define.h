@@ -15,6 +15,7 @@
 #endif
 
 #define SQ_FILE ".sq"
+#define SQ_SCHEMA 0
 #define SQ_GITHUB_URL "https://github.com/bimo2/sq"
 
 #define SQ_JSON5 \

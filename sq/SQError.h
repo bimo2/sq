@@ -11,6 +11,7 @@
 enum {
   SQCError = 100,
   SQPathError,
+  SQSyntaxError,
 };
 
 @interface NSError (SQError)

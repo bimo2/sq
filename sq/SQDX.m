@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "define.h"
+#import "SQContext.h"
 #import "SQError.h"
 
 #import "SQDX.h"
@@ -14,6 +15,7 @@
 @interface SQDX ()
 
 @property (nonatomic, copy, readonly) NSString *path;
+@property (nonatomic, copy, readonly) SQContext *context;
 
 @end
 
@@ -21,6 +23,12 @@
 
 - (instancetype)initWithPath:(NSString *)path error:(NSError *__autoreleasing *)error {
   _path = path;
+
+  if (self.path) {
+    NSData *data = [NSData dataWithContentsOfFile:path];
+
+    _context = [[SQContext alloc] initWithData:data error:error];
+  }
 
   return self;
 }
