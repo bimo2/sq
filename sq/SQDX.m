@@ -127,12 +127,43 @@
     PRINT(line.UTF8String);
     index++;
   }
+
+  NSArray *errors = self._resolve;
+
+  for (NSError *error in errors) PRINT_ERROR(error.localizedDescription.UTF8String);
 }
 
 - (void)version {
   NSString *version = [NSString stringWithFormat:@"%s (%s)", VERSION, COMMIT_SHA];
 
   PRINT(version.UTF8String);
+}
+
+- (NSArray *)_resolve {
+  if (!self.context) return nil;
+
+  NSMutableArray *errors = NSMutableArray.array;
+
+  for (NSString *bin in self.context.binaries) {
+    NSInteger status;
+
+    if (bin.isAbsolutePath) {
+      status = ![NSFileManager.defaultManager fileExistsAtPath:bin];
+    } else {
+      NSString *command = [NSString stringWithFormat:@"zsh -c 'which -s %@' > /dev/null 2>&1", bin];
+
+      status = system(command.UTF8String);
+    }
+
+    if (status) {
+      NSString *reason = [NSString stringWithFormat:@"%@ not found", bin];
+      NSError *error = [NSError errorWithCode:SQSystemError reason:reason];
+
+      [errors addObject:error];
+    }
+  }
+
+  return [NSArray arrayWithArray:errors];
 }
 
 @end

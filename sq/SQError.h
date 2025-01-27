@@ -13,6 +13,7 @@ enum {
   SQPathError,
   SQSyntaxError,
   SQRuntimeError,
+  SQSystemError,
 };
 
 @interface NSError (SQError)
