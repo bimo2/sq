@@ -15,8 +15,8 @@
 @implementation SQContext
 
 - (instancetype)initWithFileData:(NSData *)fileData error:(NSError *__autoreleasing *)error {
-  id (^block)(NSError **, NSString *) = ^id(NSError **error, NSString *message) {
-    *error = [NSError errorWithCode:SQSyntaxError reason:message];
+  id (^block)(NSError **, NSString *) = ^id(NSError **error, NSString *reason) {
+    *error = [NSError errorWithCode:SQSyntaxError reason:reason];
 
     return nil;
   };

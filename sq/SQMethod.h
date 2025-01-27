@@ -16,6 +16,7 @@
 
 - (instancetype)initWithName:(NSString *)name info:(NSString *)info commands:(NSArray *)commands;
 - (NSString *)signature;
+- (NSArray *)replaceWithOptions:(NSArray *)options error:(NSError **)error;
 
 @end
 
