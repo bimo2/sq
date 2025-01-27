@@ -17,6 +17,7 @@
 
 @property (nonatomic, copy, readonly) NSString *path;
 @property (nonatomic, copy, readonly) SQContext *context;
+@property (nonatomic, readonly) NSDictionary *secrets;
 
 @end
 
@@ -26,9 +27,37 @@
   _path = path;
 
   if (self.path) {
-    NSData *fileData = [NSData dataWithContentsOfFile:path];
+    NSData *fileData = [NSData dataWithContentsOfFile:self.path];
 
     _context = [[SQContext alloc] initWithFileData:fileData error:error];
+
+    if (*error) return nil;
+
+    NSString *envPath = [path.stringByDeletingLastPathComponent stringByAppendingPathComponent:self.context.env];
+    NSMutableDictionary *secrets = NSMutableDictionary.dictionary;
+
+    if ([NSFileManager.defaultManager fileExistsAtPath:envPath]) {
+      NSString *contents = [NSString stringWithContentsOfFile:envPath encoding:NSUTF8StringEncoding error:error];
+
+      if (contents) {
+        NSArray *lines = [contents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+
+        for (NSString *line in lines) {
+          if ([line hasPrefix:@"#"]) continue;
+
+          NSArray *components = [line componentsSeparatedByString:@"="];
+
+          if (components.count == 2) {
+            NSString *key = [components.firstObject stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+            NSString *value = [components.lastObject stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+
+            secrets[key] = value;
+          }
+        }
+      }
+    }
+
+    _secrets = [NSDictionary dictionaryWithDictionary:secrets];
   }
 
   return self;

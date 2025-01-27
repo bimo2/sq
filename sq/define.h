@@ -8,7 +8,7 @@
 #ifndef DEFINE_H
 #define DEFINE_H
 
-#define VERSION "0.1"
+#define VERSION "0.2"
 
 #ifndef COMMIT_SHA
 #define COMMIT_SHA "0000000"
@@ -30,6 +30,8 @@
 "    run: 'open https://github.com/bimo2/sq/blob/main/.sq'\n" \
 "  }\n" \
 "}\n"
+
+#define ENV_FILE ".env"
 
 #define PRINT(cstring) printf("%s\n", cstring)
 #define PRINT_SQ(cstring) printf("\033[1msq\033[0m %s\n", cstring)

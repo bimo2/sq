@@ -39,6 +39,12 @@
 
   _project = project;
 
+  id env = object[@"env"];
+
+  if (env && ![env isKindOfClass:NSString.class]) return block(error, @"expected JSON5 string: env");
+
+  _env = env ?: @ENV_FILE;
+
   id binaries = object[@"require"];
 
   if (!binaries) {

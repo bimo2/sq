@@ -42,7 +42,7 @@ curl -sf file://$(pwd)/install | sh
 ```
 
 > [!IMPORTANT]
-> Release candidates are built with CI (GitHub) and should be downloaded and published as `sq-macos-$(VERSION)` (ex. `sq-macos-0.1`).
+> Release candidates are built with CI (GitHub) and should be downloaded and published as `sq-$(VERSION)` (ex. `sq-1.0`).
 
 #
 
