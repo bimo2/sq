@@ -30,6 +30,9 @@ sq build
 ./xcode/Build/Products/Debug/sq
 ```
 
+> [!IMPORTANT]
+> Release candidates are built with CI (GitHub) and should be downloaded and published as `sq-macos-$(VERSION)` (ex. `sq-macos-0.1`).
+
 #
 
 <sub><sup>**MIT.** Copyright &copy; 2025 Bimal Bhagrath</sup></sub>

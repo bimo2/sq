@@ -134,7 +134,8 @@
 }
 
 - (void)version {
-  NSString *version = [NSString stringWithFormat:@"%s (%s)", VERSION, COMMIT_SHA];
+  NSString *sha = [@COMMIT_SHA substringToIndex:7];
+  NSString *version = [NSString stringWithFormat:@"%s (%@)", VERSION, sha];
 
   PRINT(version.UTF8String);
 }
