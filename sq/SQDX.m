@@ -9,6 +9,7 @@
 #import "define.h"
 #import "SQContext.h"
 #import "SQError.h"
+#import "SQMethod.h"
 
 #import "SQDX.h"
 
@@ -44,6 +45,36 @@
   PRINT_SQ("file created.");
   PRINT(ASCII_JSON5);
   PRINT(hint.UTF8String);
+}
+
+- (void)docs {
+  if (!self.context) return;
+
+  NSString *project = self.context.project ?: self.path.stringByDeletingLastPathComponent.lastPathComponent;
+  NSString *header = [NSString stringWithFormat:@"(%@)\n-", project];
+
+  PRINT_SQ(header.UTF8String);
+
+  NSInteger maxLength = 0;
+  NSInteger index = 1;
+
+  for (SQMethod *method in self.context.methods) {
+    NSString *signature = method.signature;
+
+    if (signature.length > maxLength) maxLength = signature.length;
+  }
+
+  NSArray *sorted = [self.context.methods sortedArrayUsingComparator:^NSComparisonResult(SQMethod *a, SQMethod *b) {
+    return [a.name compare:b.name];
+  }];
+
+  for (SQMethod *method in sorted) {
+    NSString *leading = [method.signature stringByPaddingToLength:maxLength + 4 withString:@" " startingAtIndex:0];
+    NSString *line = [leading stringByAppendingString:method.info ?: @""];
+
+    PRINT(line.UTF8String);
+    index++;
+  }
 }
 
 - (void)version {

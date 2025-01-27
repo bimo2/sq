@@ -36,7 +36,7 @@ int find(char **url) {
     }
 
     lastPath = path;
-    path = [path stringByDeletingLastPathComponent];
+    path = path.stringByDeletingLastPathComponent;
   }
 
   return 0;
@@ -77,7 +77,12 @@ int main(int argc, const char * argv[]) {
 
     if (error) return fail((int)error.code, error.localizedDescription.UTF8String);
     if (!app) return fail(SQCError, NULL);
-    if (argc < 2) return 0;
+
+    if (argc < 2) {
+      [app docs];
+
+      return 0;
+    }
 
     NSString *command = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
     NSMutableArray *options = NSMutableArray.array;

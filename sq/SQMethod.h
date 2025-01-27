@@ -15,6 +15,7 @@
 @property (nonatomic, readonly) NSArray *commands;
 
 - (instancetype)initWithName:(NSString *)name info:(NSString *)info commands:(NSArray *)commands;
+- (NSString *)signature;
 
 @end
 

@@ -12,6 +12,7 @@
 
 - (instancetype)initWithPath:(NSString *)path error:(NSError **)error;
 - (void)json5WithFileManager:(NSFileManager *)fileManager error:(NSError **)error;
+- (void)docs;
 - (void)version;
 
 @end
