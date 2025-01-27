@@ -8,11 +8,11 @@ on:
       - main
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - run: |
-          sudo xcode-select -s /Applications/Xcode.app
+          sudo xcode-select -s /Applications/Xcode_16.2.app
           xcodebuild -version
       - run: xcodebuild clean build -project sq.xcodeproj -arch arm64 -scheme sq -configuration Release -derivedDataPath ./xcode GCC_PREPROCESSOR_DEFINITIONS="COMMIT_SHA=$GITHUB_SHA"
       - run: |
