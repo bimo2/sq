@@ -1,0 +1,25 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo xcode-select -s /Applications/Xcode.app
+          xcodebuild -version
+      - run: xcodebuild clean build -project sq.xcodeproj -arch arm64 -scheme sq -configuration Release -derivedDataPath ./xcode GCC_PREPROCESSOR_DEFINITIONS="COMMIT_SHA=$GITHUB_SHA"
+      - run: |
+          mkdir -p bin
+          cp xcode/Build/Products/Release/sq bin/
+      - uses: actions/upload-artifact@v3
+        with:
+          name: compiled-binary
+          path: bin/
+          retention-days: 30
