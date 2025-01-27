@@ -30,6 +30,16 @@
     _defaultValue = valueMatch.range.length > 0 ? [line substringWithRange:valueMatch.range] : nil;
   }
 
+  NSString *substring = [line substringWithRange:textMatch.range];
+
+  if ([substring hasPrefix:@"%"] && [substring hasSuffix:@"%"]) {
+    _type = SQTokenTypeSecret;
+  } else if ([substring hasPrefix:@"#"] && [substring hasSuffix:@"#"]) {
+    _type = SQTokenTypeOption;
+  } else {
+    _type = SQTokenTypeNone;
+  }
+
   _lineNumber = lineNumber;
   _range = textMatch.range;
 

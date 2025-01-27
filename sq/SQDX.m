@@ -104,7 +104,7 @@
   }
 
   NSDate *start = NSDate.date;
-  NSArray *lines = [method replaceWithOptions:options error:error];
+  NSArray *lines = [method replaceWithOptions:options secrets:self.secrets error:error];
 
   if (*error) return;
 
@@ -187,9 +187,24 @@
 
     if (status) {
       NSString *reason = [NSString stringWithFormat:@"%@ not found", bin];
-      NSError *error = [NSError errorWithCode:SQSystemError reason:reason];
+      NSError *error = [NSError errorWithCode:SQUserError reason:reason];
 
       [errors addObject:error];
+    }
+  }
+
+  for (SQMethod *method in self.context.methods) {
+    NSSet *variables = method.variables;
+
+    if (!variables.count) continue;
+
+    for (NSString *variable in variables) {
+      if (![self.secrets valueForKey:variable]) {
+        NSString *reason = [NSString stringWithFormat:@"%@ not defined", variable];
+        NSError *error = [NSError errorWithCode:SQUserError reason:reason];
+
+        [errors addObject:error];
+      }
     }
   }
 
