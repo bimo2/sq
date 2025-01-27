@@ -57,7 +57,16 @@
     if (token.type == SQTokenTypeNone) continue;
 
     if (token.type == SQTokenTypeSecret) {
-      NSString *string = [secrets valueForKey:token.name] ?: @"";
+      NSString *string = [secrets valueForKey:token.name];
+
+      if (!string) {
+        NSString *reason = [NSString stringWithFormat:@"required: %@", token.name];
+
+        *error = [NSError errorWithCode:SQRuntimeError reason:reason];
+
+        return NSArray.array;
+      }
+
       NSString *update = [lines[token.lineNumber] stringByReplacingCharactersInRange:token.range withString:string];
 
       [lines replaceObjectAtIndex:token.lineNumber withObject:update];

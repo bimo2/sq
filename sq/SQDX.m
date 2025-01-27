@@ -63,9 +63,10 @@
   return self;
 }
 
-- (void)json5WithFileManager:(NSFileManager *)fileManager error:(NSError *__autoreleasing *)error {
+- (void)createJSON5WithError:(NSError *__autoreleasing *)error {
   if (self.path) return;
 
+  NSFileManager *fileManager = NSFileManager.defaultManager;
   NSString *file = [fileManager.currentDirectoryPath stringByAppendingPathComponent:@SQ_FILE];
   NSString *contents = [NSString stringWithFormat:@SQ_JSON5, fileManager.currentDirectoryPath.lastPathComponent];
   NSString *hint = [NSString stringWithFormat:@"learn more: %@", @SQ_GITHUB_URL];
@@ -76,11 +77,9 @@
   PRINT(hint.UTF8String);
 }
 
-- (void)executeWithName:(NSString *)name options:(NSArray *)options error:(NSError **)error {
+- (void)executeWithName:(NSString *)name options:(NSArray *)options error:(NSError *__autoreleasing *)error {
   if (!self.context) {
-    NSString *reason = [NSString stringWithFormat:@"not found: %@", @SQ_FILE];
-
-    *error = [NSError errorWithCode:SQPathError reason:reason];
+    *error = self._notFound;
 
     return;
   }
@@ -128,8 +127,12 @@
   PRINT_TIME(elapsed.doubleValue);
 }
 
-- (void)docs {
-  if (!self.context) return;
+- (void)docsWithError:(NSError *__autoreleasing *)error {
+  if (!self.context) {
+    *error = self._notFound;
+
+    return;
+  }
 
   NSString *project = self.context.project ?: self.path.stringByDeletingLastPathComponent.lastPathComponent;
   NSString *header = [NSString stringWithFormat:@"(%@)\n-", project];
@@ -209,6 +212,12 @@
   }
 
   return [NSArray arrayWithArray:errors];
+}
+
+- (NSError *)_notFound {
+  NSString *reason = [NSString stringWithFormat:@"%s not found", SQ_FILE];
+
+  return [NSError errorWithCode:SQPathError reason:reason];
 }
 
 @end

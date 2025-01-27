@@ -11,9 +11,9 @@
 @interface SQDX : NSObject
 
 - (instancetype)initWithPath:(NSString *)path error:(NSError **)error;
-- (void)json5WithFileManager:(NSFileManager *)fileManager error:(NSError **)error;
+- (void)createJSON5WithError:(NSError **)error;
 - (void)executeWithName:(NSString *)name options:(NSArray *)options error:(NSError **)error;
-- (void)docs;
+- (void)docsWithError:(NSError **)error;
 - (void)version;
 
 @end

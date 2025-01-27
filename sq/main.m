@@ -79,7 +79,9 @@ int main(int argc, const char * argv[]) {
     if (!app) return fail(SQCError, NULL);
 
     if (argc < 2) {
-      [app docs];
+      [app docsWithError:&error];
+
+      if (error) return fail((int)error.code, error.localizedDescription.UTF8String);
 
       return 0;
     }
@@ -94,7 +96,7 @@ int main(int argc, const char * argv[]) {
     }
 
     if ([command isEqualToString:@"."]) {
-      [app json5WithFileManager:NSFileManager.defaultManager error:&error];
+      [app createJSON5WithError:&error];
     } else if ([command isEqualToString:@"--version"] || [command isEqualToString:@"-v"]) {
       [app version];
     } else {
