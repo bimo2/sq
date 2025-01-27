@@ -47,6 +47,58 @@
   PRINT(hint.UTF8String);
 }
 
+- (void)executeWithName:(NSString *)name options:(NSArray *)options error:(NSError **)error {
+  if (!self.context) {
+    NSString *reason = [NSString stringWithFormat:@"not found: %@", @SQ_FILE];
+
+    *error = [NSError errorWithCode:SQPathError reason:reason];
+
+    return;
+  }
+
+  SQMethod *method;
+
+  for (SQMethod *object in self.context.methods) {
+    if ([object.name isEqualToString:name]) {
+      method = object;
+
+      break;
+    }
+  }
+
+  if (!method) {
+    NSString *reason = [NSString stringWithFormat:@"undefined: %@", name];
+
+    *error = [NSError errorWithCode:SQRuntimeError reason:reason];
+
+    return;
+  }
+
+  NSDate *start = NSDate.date;
+  NSArray *lines = [method replaceWithOptions:options error:error];
+
+  if (*error) return;
+
+  for (NSString *line in lines) {
+    PRINT_INFO(name.UTF8String, line.UTF8String);
+
+    NSString *command = [NSString stringWithFormat:@"cd %@ && zsh -c '%@'", self.path.stringByDeletingLastPathComponent, line];
+    NSInteger code = system(command.UTF8String);
+
+    if (code) {
+      NSString *reason = [NSString stringWithFormat:@"failed: %li", code];
+
+      *error = [NSError errorWithCode:code reason:reason];
+
+      return;
+    }
+  }
+
+  NSNumber *elapsed = [NSNumber numberWithDouble:start.timeIntervalSinceNow * -1];
+
+  PRINT_TIME(elapsed.doubleValue);
+}
+
 - (void)docs {
   if (!self.context) return;
 
