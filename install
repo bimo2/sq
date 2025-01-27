@@ -1,0 +1,112 @@
+#!/bin/sh
+
+progress=0
+
+next () {
+  progress=$((progress + 1))
+
+  tput sc
+  echo "\\033[1m- $1\\033[0m"
+  sleep 0.25
+}
+
+success () {
+  tput rc
+  tput ed || tput cd
+  echo "\\033[1m\xE2\x9C\x93 $1\\033[0m"
+}
+
+fail () {
+  tput rc
+  tput ed || tput cd
+  echo "\\033[1;91m\xE2\x9C\x97 $1\n\nfailed!\\033[0m"
+
+  exit $progress
+}
+
+parse_version () {
+  python3 -c "
+import sys, json;
+print(json.load(sys.stdin)['tag_name']);
+"
+}
+
+parse_asset_url () {
+  python3 -c "
+import sys, json;
+data=json.load(sys.stdin)['assets'];
+for d in data:
+  if 'sq-' in d['name']:
+    print(d['url']);
+"
+}
+
+tput cl
+echo "\\033[1;93m$(whoami)\\033[0;93m is typing...\\033[0m\n"
+sleep 0.75
+echo "do you want to install sq? [y/n]"
+tput sc
+read response < /dev/tty
+tput rc
+tput ed || tput cd
+
+if [ "$response" \< "y" ]; then
+  echo "\n\\033[1;93m$(whoami)\\033[0;93m left the conversation.\\033[0m"
+
+  exit 0
+fi
+
+echo ""
+next "resolving latest version..."
+
+release_url=https://api.github.com/repos/bimo2/sq/releases/latest
+cache_path=/var/sq
+cache_file="$cache_path/github_response.json"
+
+sudo mkdir -p $cache_path
+sudo curl -L -H "accept: application/vnd.github.v3+json" $release_url -o $cache_file
+
+version=$(cat $cache_file | parse_version)
+asset_url=$(cat $cache_file | parse_asset_url)
+
+if [ ! -z $version ] && [ ! -z $asset_url ]; then
+  success "resolved version $version"
+else
+  fail "failed to resolve version"
+fi
+
+next "downloading assets..."
+
+download_path=/opt/sq
+download_file="$download_path/$(basename $asset_url)"
+
+sudo mkdir -p $download_path
+sudo curl -L -H "accept: application/octet-stream" $asset_url -o $download_file
+
+if [ $? -eq 0 ]; then
+  success "downloaded asset $(basename $asset_url)"
+else
+  fail "failed to download $asset_url"
+fi
+
+next "linking binaries..."
+
+install_path=/usr/local/bin
+binary_link="$install_path/sq"
+
+sudo mkdir -p $install_path
+sudo rm -rf $binary_link
+sudo ln -s $download_file $binary_link && sudo chmod a+x $binary_link
+
+ln_status=$?
+
+if [ $ln_status -eq 0 ]; then
+  success "linked $(basename $download_file) to sq"
+else
+  error "failed to link $(basename $download_file)"
+fi
+
+sudo rm -rf $cache_path
+echo "\n\\033[1;93m$(whoami)\\033[0;93m left the conversation.\\033[0m"
+
+exit 0
