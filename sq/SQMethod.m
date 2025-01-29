@@ -24,10 +24,17 @@
 
 - (NSString *)signature {
   NSString *result = [NSString stringWithString:self.name];
-  NSArray *tokens = [self _tokenizeWithFilter:SQTokenTypeOption];
+  SQTokenType filter = SQTokenTypeOption | SQTokenTypeXYZ;
+  NSArray *tokens = [self _tokenizeWithFilter:filter];
 
   for (SQToken *token in tokens) {
-    NSString *format = token.isRequired ? @" <%@!>" : @" <%@>";
+    NSString *format;
+
+    if ((token.type & SQTokenTypeXYZ) != 0) {
+      format = @" ...";
+    } else {
+      format = token.isRequired ? @" <%@!>" : @" <%@>";
+    }
 
     result = [result stringByAppendingFormat:format, token.name];
   }
@@ -46,18 +53,30 @@
 
 - (NSArray *)replaceWithOptions:(NSArray *)options secrets:(NSDictionary *)secrets error:(NSError **)error {
   NSMutableArray *lines = [NSMutableArray arrayWithArray:self.commands];
-  SQTokenType filter = SQTokenTypeOption | SQTokenTypeSecret;
+  SQTokenType filter = SQTokenTypeOption | SQTokenTypeXYZ;
   NSArray *tokens = [self _tokenizeWithFilter:filter];
-  __block NSInteger optionIndex = 0;
+  __block NSInteger index = 0;
+  __block NSInteger seekIndex = 0;
 
-  [tokens enumerateObjectsUsingBlock:^(SQToken *token, NSUInteger index, BOOL *stop) {
-    if (token.type == SQTokenTypeOption) optionIndex++;
+  [tokens enumerateObjectsUsingBlock:^(SQToken *token, NSUInteger i, BOOL *stop) {
+    if ((token.type & SQTokenTypeOption) != 0) {
+      index++;
+      seekIndex++;
+    }
+
+    if ((token.type & SQTokenTypeXYZ) != 0) {
+      index = options.count > tokens.count ? options.count : tokens.count;
+      *stop = YES;
+    }
   }];
 
-  for (SQToken *token in tokens.reverseObjectEnumerator) {
-    if (token.type == SQTokenTypeNone) continue;
+  filter = filter | SQTokenTypeSecret;
+  tokens = [self _tokenizeWithFilter:filter];
 
-    if (token.type == SQTokenTypeSecret) {
+  for (SQToken *token in tokens.reverseObjectEnumerator) {
+    if ((token.type & SQTokenTypeNone) != 0) continue;
+
+    if ((token.type & SQTokenTypeSecret) != 0) {
       NSString *string = [secrets valueForKey:token.name];
 
       if (!string) {
@@ -75,9 +94,36 @@
       continue;
     }
 
-    if (--optionIndex < 0) break;
+    if (--index < 0) break;
 
-    NSString *option = options.count > optionIndex ? [options objectAtIndex:optionIndex] : @"-";
+    if ((token.type & SQTokenTypeXYZ) != 0) {
+      if (options.count > index) {
+        NSMutableArray *array = NSMutableArray.array;
+
+        do {
+          NSString *option = [options objectAtIndex:index];
+
+          [array addObject:option];
+        } while (--index >= seekIndex);
+
+        index++;
+
+        NSString *group = [array.reverseObjectEnumerator.allObjects componentsJoinedByString:@" "];
+        NSString *update = [lines[token.lineNumber] stringByReplacingCharactersInRange:token.range withString:group];
+
+        [lines replaceObjectAtIndex:token.lineNumber withObject:update];
+
+        continue;
+      }
+
+      NSString *update = [lines[token.lineNumber] stringByReplacingCharactersInRange:token.range withString:@""];
+
+      [lines replaceObjectAtIndex:token.lineNumber withObject:update];
+
+      continue;
+    }
+
+    NSString *option = options.count > index ? [options objectAtIndex:index] : @"-";
 
     if (![option isEqualToString:@"-"]) {
       NSString *string = [option containsString:@" "] ? [NSString stringWithFormat:@"\"%@\"", option] : option;
@@ -123,7 +169,7 @@
 - (NSArray *)_tokenizeWithFilter:(SQTokenType)filter {
   NSMutableArray *lines = [NSMutableArray arrayWithArray:self.commands];
   NSMutableArray *tokens = NSMutableArray.array;
-  NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#(?<=#)((\\w+[!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#|%\\w+%" options:NSRegularExpressionCaseInsensitive error:nil];
+  NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"#(?<=#)((\\w+[!]?)|(\\w+ -> ([^\\s#]+|\"[^#]+\")))(?=#)#|###|%\\w+%" options:NSRegularExpressionCaseInsensitive error:nil];
 
   for (int i = 0; i < lines.count; i++) {
     NSString *line = [lines objectAtIndex:i];

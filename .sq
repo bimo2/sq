@@ -9,6 +9,10 @@ bin: {
     d: 'build sq binary',
     zsh: 'xcodebuild clean build -project sq.xcodeproj -arch arm64 -scheme sq -configuration #config -> Debug# -derivedDataPath ./xcode'
   },
+  dev: {
+    d: 'use sq (debug)',
+    zsh: './xcode/Build/Products/Debug/sq ###'
+  },
   clean: {
     d: 'delete untracked files',
     zsh: 'git clean -dfxi -e .env -e xcschemes'

@@ -12,7 +12,7 @@
 @implementation SQToken
 
 - (instancetype)initWithTextMatch:(NSTextCheckingResult *)textMatch line:(NSString *)line lineNumber:(NSInteger)lineNumber {
-  NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:@"\\w+[!]?" options:NSRegularExpressionCaseInsensitive error:nil];
+  NSRegularExpression *nameRegex = [NSRegularExpression regularExpressionWithPattern:@"\\w+[!]?|###" options:NSRegularExpressionCaseInsensitive error:nil];
   NSTextCheckingResult *nameMatch = [nameRegex firstMatchInString:line options:0 range:textMatch.range];
   NSString *name = [line substringWithRange:nameMatch.range];
 
@@ -34,6 +34,9 @@
 
   if ([substring hasPrefix:@"%"] && [substring hasSuffix:@"%"]) {
     _type = SQTokenTypeSecret;
+    _isRequired = YES;
+  } else if ([substring isEqualToString:@"###"]) {
+    _type = SQTokenTypeXYZ;
   } else if ([substring hasPrefix:@"#"] && [substring hasSuffix:@"#"]) {
     _type = SQTokenTypeOption;
   } else {

@@ -11,7 +11,8 @@
 typedef NS_OPTIONS(NSUInteger, SQTokenType) {
   SQTokenTypeNone = 0,
   SQTokenTypeOption = 1 << 0,
-  SQTokenTypeSecret = 1 << 1,
+  SQTokenTypeXYZ = 1 << 1,
+  SQTokenTypeSecret = 1 << 2,
 };
 
 @interface SQToken : NSObject
