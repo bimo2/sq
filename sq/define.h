@@ -8,7 +8,7 @@
 #ifndef DEFINE_H
 #define DEFINE_H
 
-#define VERSION "0.2"
+#define VERSION "0.3"
 
 #ifndef COMMIT_SHA
 #define COMMIT_SHA "0000000"
@@ -26,12 +26,13 @@
 "],\n" \
 "bin: {\n" \
 "  example: {\n" \
-"    info: 'learn more on github.com',\n" \
-"    run: 'open https://github.com/bimo2/sq/blob/main/.sq'\n" \
+"    d: 'learn more on github.com',\n" \
+"    zsh: 'open https://github.com/bimo2/sq/blob/main/.sq'\n" \
 "  }\n" \
 "}\n"
 
-#define ENV_FILE ".env"
+#define DEFAULT_ENV ".env"
+#define DEFAULT_SH "zsh"
 
 #define PRINT(cstring) printf("%s\n", cstring)
 #define PRINT_SQ(cstring) printf("\033[1msq\033[0m %s\n", cstring)

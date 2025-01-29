@@ -43,7 +43,7 @@
 
   if (env && ![env isKindOfClass:NSString.class]) return block(error, @"expected JSON5 string: env");
 
-  _env = env ?: @ENV_FILE;
+  _env = env ?: @DEFAULT_ENV;
 
   id binaries = object[@"require"];
 
@@ -77,6 +77,7 @@
   } else {
     NSDictionary *map = [NSMutableDictionary dictionaryWithDictionary:methods];
     NSMutableArray *array = NSMutableArray.array;
+    NSArray *shells = @[ @"sh", @"bash", @"zsh", @"csh", @"ksh" ];
 
     for (NSString *key in map.allKeys) {
       if (![map[key] isKindOfClass:NSDictionary.class]) {
@@ -85,18 +86,36 @@
         return block(error, message);
       }
 
-      id info = map[key][@"info"];
+      id info = map[key][@"d"];
 
       if (info && ![info isKindOfClass:NSString.class]) {
-        NSString *message = [NSString stringWithFormat:@"expected JSON5 string: bin.%@.info", key];
+        NSString *message = [NSString stringWithFormat:@"expected JSON5 string: bin.%@.d", key];
 
         return block(error, message);
       }
 
-      id commands = map[key][@"run"];
+      NSString *shell;
+
+      for (NSString *item in shells) {
+        if (map[key][item]) {
+          shell = item;
+
+          break;
+        }
+      }
+
+      if (!shell) {
+        SQMethod *method = [[SQMethod alloc] initWithName:key info:info shell:@DEFAULT_SH commands:NSArray.array];
+
+        [array addObject:method];
+
+        continue;
+      }
+
+      id commands = map[key][shell];
 
       if ([commands isKindOfClass:NSString.class]) {
-        SQMethod *method = [[SQMethod alloc] initWithName:key info:info commands:@[ commands ]];
+        SQMethod *method = [[SQMethod alloc] initWithName:key info:info shell:shell commands:@[ commands ]];
 
         [array addObject:method];
 
@@ -108,7 +127,7 @@
 
         for (NSObject *item in commands) {
           if (![item isKindOfClass:NSString.class]) {
-            NSString *message = [NSString stringWithFormat:@"expected JSON5 string: bin.%@.run[%ld]", key, index];
+            NSString *message = [NSString stringWithFormat:@"expected JSON5 string: bin.%@.%@[%ld]", key, shell, index];
 
             return block(error, message);
           }
@@ -116,14 +135,14 @@
           index++;
         }
 
-        SQMethod *method = [[SQMethod alloc] initWithName:key info:info commands:commands];
+        SQMethod *method = [[SQMethod alloc] initWithName:key info:info shell:shell commands:commands];
 
         [array addObject:method];
 
         continue;
       }
 
-      NSString *message = [NSString stringWithFormat:@"expected JSON5 string|array: bin.%@.run", key];
+      NSString *message = [NSString stringWithFormat:@"expected JSON5 string|array: bin.%@.%@", key, shell];
 
       return block(error, message);
     }

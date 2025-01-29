@@ -110,7 +110,7 @@
   for (NSString *line in lines) {
     PRINT_INFO(name.UTF8String, line.UTF8String);
 
-    NSString *command = [NSString stringWithFormat:@"cd %@ && zsh -c '%@'", self.path.stringByDeletingLastPathComponent, line];
+    NSString *command = [NSString stringWithFormat:@"cd %@ && %@ -c '%@'", self.path.stringByDeletingLastPathComponent, method.shell, line];
     NSInteger code = system(command.UTF8String);
 
     if (code) {
@@ -183,7 +183,7 @@
     if (bin.isAbsolutePath) {
       status = ![NSFileManager.defaultManager fileExistsAtPath:bin];
     } else {
-      NSString *command = [NSString stringWithFormat:@"zsh -c 'which -s %@' > /dev/null 2>&1", bin];
+      NSString *command = [NSString stringWithFormat:@"%@ -c 'which -s %@' > /dev/null 2>&1", @DEFAULT_SH, bin];
 
       status = system(command.UTF8String);
     }

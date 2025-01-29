@@ -1,6 +1,6 @@
 # sq
 
-sq is an open source version of Square's internal `sq` command line tool for developer experience on macOS. Create a `.sq` file in your repository to:
+sq is an open source version of Square's internal `sq` command line tool for developer experience. Create a `.sq` file in your repository to:
 
 - `install` libraries and frameworks
 - `start` servers and run `tests`

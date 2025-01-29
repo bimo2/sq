@@ -6,11 +6,11 @@ require: [
 ],
 bin: {
   build: {
-    info: 'build sq binary',
-    run: 'xcodebuild clean build -project sq.xcodeproj -arch arm64 -scheme sq -configuration #config -> Debug# -derivedDataPath ./xcode'
+    d: 'build sq binary',
+    zsh: 'xcodebuild clean build -project sq.xcodeproj -arch arm64 -scheme sq -configuration #config -> Debug# -derivedDataPath ./xcode'
   },
   clean: {
-    info: 'delete untracked files',
-    run: 'git clean -dfxi -e .env -e xcschemes'
+    d: 'delete untracked files',
+    zsh: 'git clean -dfxi -e .env -e xcschemes'
   }
 }

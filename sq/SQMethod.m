@@ -13,9 +13,10 @@
 
 @implementation SQMethod
 
-- (instancetype)initWithName:(NSString *)name info:(NSString *)info commands:(NSArray *)commands {
+- (instancetype)initWithName:(NSString *)name info:(NSString *)info shell:(NSString *)shell commands:(NSArray *)commands {
   _name = name;
   _info = info;
+  _shell = shell;
   _commands = commands.copy;
 
   return self;
